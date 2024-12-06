@@ -192,7 +192,7 @@ export default {
         ],
         // アクション漫画
         [
-          { src: require("../assets/data/waterfall/1.jpg"), name: "waterfall1", type: "waterfall" },
+          { src: require("../assets/data/manga_action/1.jpg"), name: "waterfall1", type: "waterfall" },
           { src: require("../assets/data/waterfall/2.jpg"), name: "waterfall2", type: "waterfall" },
           { src: require("../assets/data/waterfall/3.jpg"), name: "waterfall3", type: "waterfall" },
           //{ src: require("../assets/data/waterfall/4.jpg"), name: "waterfall4", type: "waterfall" },
