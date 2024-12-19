@@ -193,20 +193,16 @@ export default {
         // アクション漫画
         [
           { src: require("../assets/data/manga_action/1.jpg"), name: "manga_action1", type: "manga_action" },
-          { src: require("../assets/data/manga_action/2.jpg"), name: "manga_action22", type: "manga_action" },
+          { src: require("../assets/data/manga_action/2.jpg"), name: "manga_action2", type: "manga_action" },
           { src: require("../assets/data/manga_action/3.jpg"), name: "manga_action3", type: "manga_action" },
-          //{ src: require("../assets/data/waterfall/4.jpg"), name: "waterfall4", type: "waterfall" },
-          //{ src: require("../assets/data/waterfall/5.jpg"), name: "waterfall5", type: "waterfall" },
           { src: require("../assets/data/manga_action/4.jpg"), name: "manga_action4", type: "manga_action" }
         ],
-        // 恋愛漫画
+        // 掃除機
         [
-          { src: require("../assets/data/waterfall/1.jpg"), name: "waterfall1", type: "waterfall" },
-          { src: require("../assets/data/waterfall/2.jpg"), name: "waterfall2", type: "waterfall" },
-          { src: require("../assets/data/waterfall/3.jpg"), name: "waterfall3", type: "waterfall" },
-          //{ src: require("../assets/data/waterfall/4.jpg"), name: "waterfall4", type: "waterfall" },
-          //{ src: require("../assets/data/waterfall/5.jpg"), name: "waterfall5", type: "waterfall" },
-          { src: require("../assets/data/waterfall/6.jpg"), name: "waterfall6", type: "waterfall" }
+          { src: require("../assets/data/vaccum/1.jpg"), name: "vacuum1", type: "vacuum" },
+          { src: require("../assets/data/vacuum/2.jpg"), name: "vacuum2", type: "vacuum" },
+          { src: require("../assets/data/vacuum/3.jpg"), name: "vacuum3", type: "vacuum" },
+          { src: require("../assets/data/vacuum/4.jpg"), name: "vacuum4", type: "vacuum" }
         ],
 
         // ダミー質問1
@@ -275,6 +271,7 @@ export default {
         mountain: "山岳地帯の写真が表示されます。探索してみたい場所を選んでください",
         orange: "一番売れると思うオレンジの宣材写真を1つ選んでください",
         waterfall: "表示される滝の内、一番気に入った滝はどれですか？",
+        vacuum: "表示される掃除機の内、 一番安そうな掃除機はどれですか？",
 
         dummy1: "写っている人数が一番多い写真を選んでください",
         dummy2: "3階建ての家を選んでください",
