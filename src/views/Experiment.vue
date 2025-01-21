@@ -199,7 +199,7 @@ export default {
         ],
         // 掃除機
         [
-          { src: require("../assets/data/vaccum/1.jpg"), name: "vacuum1", type: "vacuum" },
+          { src: require("../assets/data/vacuum/1.jpg"), name: "vacuum1", type: "vacuum" },
           { src: require("../assets/data/vacuum/2.jpg"), name: "vacuum2", type: "vacuum" },
           { src: require("../assets/data/vacuum/3.jpg"), name: "vacuum3", type: "vacuum" },
           { src: require("../assets/data/vacuum/4.jpg"), name: "vacuum4", type: "vacuum" }
