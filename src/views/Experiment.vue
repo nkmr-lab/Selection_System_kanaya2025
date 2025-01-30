@@ -318,6 +318,45 @@ export default {
       }
     }
 
+    function shuffleArray(array){
+      for(let i= array.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // 配列に変換してシャッフル
+    let questionList = Object.entries(questions).map(([name, text]) => ({ name, text}));
+    shuffleArray(questionList);
+
+    // 割り当て結果を保存する配列
+    let assignment = [];
+
+    //ランダムに割り当てる関数
+    function getRandomGroup(){
+      // 0: blur, 1: pixel
+      return Math.random() < 0.5 ? 0 : 1;
+    }
+
+    //precd(2),delay(3),equal(4)の割り当て
+    let currentPartIndex = 0;
+    const partOrder = [2, 3, 4];
+
+    // 各質問をランダムにblurまたはpixelに割り当てる
+    questionList.forEach(question => {
+      let group = getRandomGroup();
+      let part = partOrder[currentPartIndex];
+      currentPartIndex = (currentPartindex + 1) % partOrder.length;
+
+      assignment.push({
+        question: question.name,
+        group: group,
+        part: part,
+      });
+    });
+
+
     // 質問順をシャッフル
     this.shuffledChoices = _.shuffle(this.choices);
     for (let i = 0; i < this.shuffledChoices.length; i++) {
