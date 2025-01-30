@@ -256,28 +256,32 @@ export default {
       shuffledChoices: [],
       questions: {
 
-        swim: "一番行ってみたいと思う海の景色はどれですか？",
+         swim: "一番行ってみたいと思う海の景色はどれですか？",
         flower: "自宅に飾りたいチューリップを1つ選んでください",
-        wise: "表示される人物の内、将棋が強そうな人はどれですか？",
-        diamond: "表示されるダイヤモンドの内、一番欲しいのはどれですか？",
+         wise: "表示される人物の内、将棋が強そうな人はどれですか？",
+         diamond: "表示されるダイヤモンドの内、一番欲しいのはどれですか？",
         aurora: "表示されるオーロラの内、一番見てみたいのはどれですか？",
-        spycy: "表示される食べ物の内、一番辛そうなのはどれですか？",
-        eraser: "消しゴムを使います。どの消しゴムを使いますか？",
-        button: "表示されるボタンの内、一番押してみたいボタンはどれですか？",
-        door: "表示されるドアの内、一番重たそうなドアはどれですか？",
-        lemon: "表示されるレモンの内、一番酸っぱそうなレモンはどれですか？",
-        cheetah: "表示されるチーターの内、一番動物らしさを感じるのはどれですか？",
-        fishing: "表示される釣り堀の内、一番魚が釣れそうな釣り堀はどれですか？",
-        mountain: "山岳地帯の写真が表示されます。探索してみたい場所を選んでください",
-        orange: "一番売れると思うオレンジの宣材写真を1つ選んでください",
-        waterfall: "表示される滝の内、一番気に入った滝はどれですか？",
-        vacuum: "表示される掃除機の内、 一番安そうな掃除機はどれですか？",
+         spycy: "表示される食べ物の内、一番辛そうなのはどれですか？",
+         eraser: "消しゴムを使います。どの消しゴムを使いますか？",
+         button: "表示されるボタンの内、一番押してみたいボタンはどれですか？",
+         door: "表示されるドアの内、一番重たそうなドアはどれですか？",
+         lemon: "表示されるレモンの内、一番酸っぱそうなレモンはどれですか？",
+         cheetah: "表示されるチーターの内、一番動物らしさを感じるのはどれですか？",
+         fishing: "表示される釣り堀の内、一番魚が釣れそうな釣り堀はどれですか？",
+         mountain: "山岳地帯の写真が表示されます。探索してみたい場所を選んでください",
+         orange: "一番売れると思うオレンジの宣材写真を1つ選んでください",
+         waterfall: "表示される滝の内、一番気に入った滝はどれですか？",
+         vacuum: "表示される掃除機の内、 一番安そうな掃除機はどれですか？",
+         manga: "表示される漫画の内、一番読みたいのはどれですか？",
+         movie: "表示される映画のサムネイルの内、一番見たいと思うのはどれですか？",
+        //milk: "表示される牛乳の内、一番背が伸びそうなのはどれですか？",
+        //juice: "表示される野菜ジュースの内、一番おいしそうなのはどれですか？",
 
         dummy1: "写っている人数が一番多い写真を選んでください",
         dummy2: "3階建ての家を選んでください",
         dummy3: "一輪車を選んでください",
         dummy4: "映っている円が一番多い画像を選んでください",
-        dummy5: "夜の時間帯の写真を選んでください"
+        //dummy5: "夜の時間帯の写真を選んでください"
 
       },
       shuffledQuestions: [],
@@ -317,7 +321,7 @@ export default {
         img.src = x.src;
       }
     }
-
+    // ----------------------------
     function shuffleArray(array){
       for(let i= array.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i + 1));
@@ -327,35 +331,63 @@ export default {
     }
 
     // 配列に変換してシャッフル
-    let questionList = Object.entries(questions).map(([name, text]) => ({ name, text}));
+    let questionList = Object.entries(this.questions).map(([name, text]) => ({ name, text}));
     shuffleArray(questionList);
+
+    // ダミー質問と通常質問を分ける
+    let dummyQuestions = questionList.filter(q => q.name.startsWith("dummy"));
+    let nonDummyQuestions = questionList.filter(q => !q.name.startsWith("dummy"));
+
+    // 前半9問を pixel、後半9問を blur に分ける
+    let pixelQuestions = nonDummyQuestions.slice(0, 9);
+    let blurQuestions = nonDummyQuestions.slice(9, 18);
 
     // 割り当て結果を保存する配列
     let assignment = [];
 
-    //ランダムに割り当てる関数
-    function getRandomGroup(){
-      // 0: blur, 1: pixel
-      return Math.random() < 0.5 ? 0 : 1;
+    // 各グループのカウンタ
+    let counts = {
+        blur: { precd: 0, delay: 0, equal: 0 },
+        pixel: { precd: 0, delay: 0, equal: 0 }
+    };
+
+    shuffleArray(dummyQuestions);
+    // ダミー質問を割り当てる（2問をblur/equal、2問をpixel/equalに確実に割り当て）
+    assignment.push({ question: dummyQuestions[0].name, group: 0, part: 4 });
+    assignment.push({ question: dummyQuestions[1].name, group: 0, part: 4 });
+    assignment.push({ question: dummyQuestions[2].name, group: 1, part: 4 });
+    assignment.push({ question: dummyQuestions[3].name, group: 1, part: 4 });
+
+    // 通常の質問を正確に割り当てる関数
+// 割り当てる関数
+    function allocateToGroup(questions, groupName) {
+        questions.forEach(question => {
+            if (counts[groupName].precd < 3) {
+                assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 2, text: question.text });
+                counts[groupName].precd++;
+            } else if (counts[groupName].delay < 3) {
+                assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 3, text: question.text });
+                counts[groupName].delay++;
+            } else if (counts[groupName].equal < 3) {
+                assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 4, text: question.text });
+                counts[groupName].equal++;
+            }
+        });
     }
 
-    //precd(2),delay(3),equal(4)の割り当て
-    let currentPartIndex = 0;
-    const partOrder = [2, 3, 4];
+  // pixel と blur に分配
+  allocateToGroup(pixelQuestions, "pixel");
+  allocateToGroup(blurQuestions, "blur");
 
-    // 各質問をランダムにblurまたはpixelに割り当てる
-    questionList.forEach(question => {
-      let group = getRandomGroup();
-      let part = partOrder[currentPartIndex];
-      currentPartIndex = (currentPartindex + 1) % partOrder.length;
+  // ダミー質問を追加
+  // assignment.push(...dummyQuestions);
 
-      assignment.push({
-        question: question.name,
-        group: group,
-        part: part,
-      });
-    });
+  // 最終的にすべてシャッフルして出題順を決定
+  shuffleArray(assignment);
 
+  console.log("出題順:", assignment);
+
+    // ------------------
 
     // 質問順をシャッフル
     this.shuffledChoices = _.shuffle(this.choices);
