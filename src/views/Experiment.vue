@@ -192,10 +192,10 @@ export default {
         ],
         // アクション漫画
         [
-          { src: require("../assets/data/manga_action/1.jpg"), name: "manga_action1", type: "manga_action" },
-          { src: require("../assets/data/manga_action/2.jpg"), name: "manga_action2", type: "manga_action" },
-          { src: require("../assets/data/manga_action/3.jpg"), name: "manga_action3", type: "manga_action" },
-          { src: require("../assets/data/manga_action/4.jpg"), name: "manga_action4", type: "manga_action" }
+          { src: require("../assets/data/manga_action/1.jpg"), name: "manga_action1", type: "manga" },
+          { src: require("../assets/data/manga_action/2.jpg"), name: "manga_action2", type: "manga" },
+          { src: require("../assets/data/manga_action/3.jpg"), name: "manga_action3", type: "manga" },
+          { src: require("../assets/data/manga_action/4.jpg"), name: "manga_action4", type: "manga" }
         ],
         // 掃除機
         [
@@ -203,6 +203,13 @@ export default {
           { src: require("../assets/data/vacuum/2.jpg"), name: "vacuum2", type: "vacuum" },
           { src: require("../assets/data/vacuum/3.jpg"), name: "vacuum3", type: "vacuum" },
           { src: require("../assets/data/vacuum/4.jpg"), name: "vacuum4", type: "vacuum" }
+        ],
+         // 映画
+         [
+          { src: require("../assets/data/movie_edo/1.jpg"), name: "movie_edo1", type: "movie" },
+          { src: require("../assets/data/movie_edo/2.jpg"), name: "movie_edo2", type: "movie" },
+          { src: require("../assets/data/movie_edo/3.jpg"), name: "movie_edo3", type: "movie" },
+          { src: require("../assets/data/movie_edo/4.jpg"), name: "movie_edo4", type: "movie" }
         ],
 
         // ダミー質問1
@@ -290,6 +297,7 @@ export default {
       readQuestionStartTime: null,
       readQuestionFinishTime: null,
       section: 0,
+      assignment: [],
       isShowChoices: true,
       isShowQuestion: true,
       wWidth: window.innerWidth,
@@ -342,9 +350,6 @@ export default {
     let pixelQuestions = nonDummyQuestions.slice(0, 9);
     let blurQuestions = nonDummyQuestions.slice(9, 18);
 
-    // 割り当て結果を保存する配列
-    let assignment = [];
-
     // 各グループのカウンタ
     let counts = {
         blur: { precd: 0, delay: 0, equal: 0 },
@@ -353,76 +358,89 @@ export default {
 
     shuffleArray(dummyQuestions);
     // ダミー質問を割り当てる（2問をblur/equal、2問をpixel/equalに確実に割り当て）
-    assignment.push({ question: dummyQuestions[0].name, group: 0, part: 4 });
-    assignment.push({ question: dummyQuestions[1].name, group: 0, part: 4 });
-    assignment.push({ question: dummyQuestions[2].name, group: 1, part: 4 });
-    assignment.push({ question: dummyQuestions[3].name, group: 1, part: 4 });
+    this.assignment.push({ question: dummyQuestions[0].name, group: 0, part: 4, text: dummyQuestions[0].text });
+    this.assignment.push({ question: dummyQuestions[1].name, group: 0, part: 4, text: dummyQuestions[1].text });
+    this.assignment.push({ question: dummyQuestions[2].name, group: 1, part: 4, text: dummyQuestions[2].text });
+    this.assignment.push({ question: dummyQuestions[3].name, group: 1, part: 4, text: dummyQuestions[3].text });
 
     // 通常の質問を正確に割り当てる関数
 // 割り当てる関数
-    function allocateToGroup(questions, groupName) {
-        questions.forEach(question => {
-            if (counts[groupName].precd < 3) {
-                assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 2, text: question.text });
-                counts[groupName].precd++;
-            } else if (counts[groupName].delay < 3) {
-                assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 3, text: question.text });
-                counts[groupName].delay++;
-            } else if (counts[groupName].equal < 3) {
-                assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 4, text: question.text });
-                counts[groupName].equal++;
-            }
-        });
+const allocateToGroup = (questions, groupName) => {
+  questions.forEach(question => {
+    if (counts[groupName].precd < 3) {
+      this.assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 2, text: question.text });
+      counts[groupName].precd++;
+    } else if (counts[groupName].delay < 3) {
+      this.assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 3, text: question.text });
+      counts[groupName].delay++;
+    } else if (counts[groupName].equal < 3) {
+      this.assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 4, text: question.text });
+      counts[groupName].equal++;
     }
+  });
+};
 
   // pixel と blur に分配
   allocateToGroup(pixelQuestions, "pixel");
   allocateToGroup(blurQuestions, "blur");
 
-  // ダミー質問を追加
-  // assignment.push(...dummyQuestions);
-
   // 最終的にすべてシャッフルして出題順を決定
-  shuffleArray(assignment);
+  shuffleArray(this.assignment);
 
-  console.log("出題順:", assignment);
+  console.log("出題順:", this.assignment);
+  console.log("1問目の手法：", this.assignment[0].group);
+  console.log("1問目の条件：", this.assignment[0].part);
+  console.log("1問目の質問文：", this.assignment[0].text);
+
 
     // ------------------
 
     // 質問順をシャッフル
-    this.shuffledChoices = _.shuffle(this.choices);
-    for (let i = 0; i < this.shuffledChoices.length; i++) {
-      this.shuffledQuestions.push(this.questions[this.shuffledChoices[i][0].type]);
+    this.shuffledQuestions = [];
+    this.shuffledChoices = [];
+    for (let i = 0; i < this.assignment.length; i++) {
+      this.shuffledQuestions.push(this.assignment[i].text);
 
+      const questionType = this.assignment[i].question;
+      const choicesForCurrentQuestion = _.shuffle(
+        this.choices.find(choiceSet => choiceSet[0].type === questionType)
+      );
+      this.shuffledChoices.push(choicesForCurrentQuestion);
     }
-    // 選択肢をシャッフル
-    for (let i = 0; i < this.choices.length; i++) {
-      this.shuffledChoices[i] = _.shuffle(this.shuffledChoices[i]);
-    }
-    // 変化を起こす質問番号を5問ずつ(計10問)選ぶ
-    let nums = [...Array(20).keys()];
-    while (this.execDelayQuestionNums.length < 10) {
-      let isDummy = false;
-      let randIndex = Math.floor(Math.random() * nums.length);
-      for (let i = 1; i < 16; i++) {
-        if (this.shuffledQuestions[nums[randIndex]] === this.questions["dummy" + String(i)]) {
-          isDummy = true;
-        }
-      }
-      if (!isDummy) {
-        this.execDelayQuestionNums.push(nums[randIndex]);
-      }
-      nums.splice(randIndex, 1);
-    }
+    console.log("設問：",this.shuffledQuestions);
+    console.log("選択肢：", this.shuffledChoices);
+
+    // // 選択肢をシャッフル
+    // for (let i = 0; i < this.choices.length; i++) {
+    //   this.shuffledChoices[i] = _.shuffle(this.shuffledChoices[i]);
+    // }
+    // console.log("選択肢：", this.shuffledChoices);
+
+    // // 変化を起こす質問番号を5問ずつ(計10問)選ぶ
+    // let nums = [...Array(20).keys()];
+    // while (this.execDelayQuestionNums.length < 10) {
+    //   let isDummy = false;
+    //   let randIndex = Math.floor(Math.random() * nums.length);
+    //   for (let i = 1; i < 16; i++) {
+    //     if (this.shuffledQuestions[nums[randIndex]] === this.questions["dummy" + String(i)]) {
+    //       isDummy = true;
+    //     }
+    //   }
+    //   if (!isDummy) {
+    //     this.execDelayQuestionNums.push(nums[randIndex]);
+    //   }
+    //   nums.splice(randIndex, 1);
+    // }
 
 
-    this.execDelayQuestionNums = this.execDelayQuestionNums.sort(function (
-      first,
-      second
-    ) {
-      return first - second;
-    });
-    this.readQuestionStartTime = performance.now();
+    // this.execDelayQuestionNums = this.execDelayQuestionNums.sort(function (
+    //   first,
+    //   second
+    // ) {
+    //   return first - second;
+    // });
+    // this.readQuestionStartTime = performance.now();
+
   },
   mounted: function () {
     window.addEventListener("resize", this.handleResize);
@@ -433,6 +451,26 @@ export default {
     next();
   },
   methods: {
+    // 各パターンに対応する関数（例）
+    handleBlurPrecd(question) {
+      console.log("Blur + Precd 処理:", question);
+    },
+    handleBlurDelay(question) {
+      console.log("Blur + Delay 処理:", question);
+    },
+    handleBlurEqual(question) {
+      console.log("Blur + Equal 処理:", question);
+    },
+    handlePixelPrecd(question) {
+      console.log("Pixel + Precd 処理:", question);
+    },
+    handlePixelDelay(question) {
+      console.log("Pixel + Delay 処理:", question);
+    },
+    handlePixelEqual(question) {
+      console.log("Pixel + Equal 処理:", question);
+    },
+  
     changeOverlay() {
       this.isShowQuestion = !this.isShowQuestion;
       this.isShowChoices = !this.isShowChoices;
@@ -442,9 +480,6 @@ export default {
       img.src = this.shuffledChoices[this.section][imageNumber].src;
     },
     imageDisplay() {
-      // for (let i = 0; i < 4; i++) {
-      //   this.imgHeight[i] = 15;
-      // }
       // 選択時間の計測開始, 質問読み時間の計測終了
       this.readQuestionFinishTime = performance.now();
       this.selectStartTime = performance.now();
@@ -453,18 +488,33 @@ export default {
       const delaySeconds = [0, 10, 20, 30];
       this.delaySecond = delaySeconds[Math.floor(Math.random() * delaySeconds.length)];
       // 変化を起こす質問ならtrueに
-      for (let i = 0; i < this.execDelayQuestionNums.length; i++) {
-        if (this.section === this.execDelayQuestionNums[i]) {
-
-          this.isDelay = true;
-          //this.isDelay = false; // 撮影用に追加
-          break;
-        } else {
-          this.isDelay = true;
-          //this.isDelay = true; // 撮影用に追加
+      for (let i = 0; i < this.assignment.length; i++) {
+        if (this.section === i) {
+          const currentAssignment = this.assignment[i];
+          const question = currentAssignment.text;  // 質問文
+          const group = currentAssignment.group;    // 0: blur, 1: pixel
+          const part = currentAssignment.part;      // 2: precd, 3: delay, 4: equal
+          
+          // 条件に応じて関数を分岐
+        if (group === 0 && part === 2) {
+          this.handleBlurPrecd(question);
+        } else if (group === 0 && part === 3) {
+          this.handleBlurDelay(question);
+        } else if (group === 0 && part === 4) {
+          this.handleBlurEqual(question);
+        } else if (group === 1 && part === 2) {
+          this.handlePixelPrecd(question);
+        } else if (group === 1 && part === 3) {
+          this.handlePixelDelay(question);
+        } else if (group === 1 && part === 4) {
+          this.handlePixelEqual(question);
         }
-      }
-    
+      }};
+      //-------------------------------------------------
+      
+
+
+      //-------------------------------------------------
 
       // 選択肢を表示
       if (this.isDelay) {
@@ -557,6 +607,7 @@ export default {
       }
 
     },
+
     changeNumToPosition(num) {
       let position = "";
       switch (num) {
