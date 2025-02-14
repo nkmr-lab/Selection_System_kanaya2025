@@ -33,6 +33,8 @@
                 <!--6枚→「n in 6」とcols="4"にする-->
                 <v-card flat tile class="d-flex justify-center" color="white" @click="toNext(n);" :width="wWidth / 4"
                   style="margin: 20px; padding: 0;">
+                  <!-- <canvas id="canvas" width="740" height="484"></canvas> -->
+                   <canvas id="canvas" width="0" height="0"></canvas>
                   <img src="" style="width: 100%;"/>
                   <!--<div :style="{ height: imgHeight[n - 1]  + '%' }"
                     style="position: absolute; bottom: -10px; left: -10px; width: calc(100% + 20px); display: center; align-items: center;justify-content: center; background: rgba(255,255,255,0.5);">
@@ -248,15 +250,15 @@ export default {
           //{ src: require("../assets/data/dummy4/5.jpg"), name: "dummy_circle5", type: "dummy4" },
           //{ src: require("../assets/data/dummy4/6.jpg"), name: "dummy_circle6", type: "dummy4" },
         ],
-        // ダミー質問5
-        [
-          { src: require("../assets/data/dummy5/1.jpg"), name: "dummy_view1", type: "dummy5" },
-          { src: require("../assets/data/dummy5/2.jpg"), name: "dummy_view2", type: "dummy5" },
-          { src: require("../assets/data/dummy5/3.jpg"), name: "dummy_view3", type: "dummy5" },
-          { src: require("../assets/data/dummy5/4.jpg"), name: "dummy_view4", type: "dummy5" },
-          //{ src: require("../assets/data/dummy5/5.jpg"), name: "dummy_view5", type: "dummy5" },
-          //{ src: require("../assets/data/dummy5/6.jpg"), name: "dummy_view6", type: "dummy5" }
-        ],
+        // // ダミー質問5
+        // [
+        //   { src: require("../assets/data/dummy5/1.jpg"), name: "dummy_view1", type: "dummy5" },
+        //   { src: require("../assets/data/dummy5/2.jpg"), name: "dummy_view2", type: "dummy5" },
+        //   { src: require("../assets/data/dummy5/3.jpg"), name: "dummy_view3", type: "dummy5" },
+        //   { src: require("../assets/data/dummy5/4.jpg"), name: "dummy_view4", type: "dummy5" },
+        //   //{ src: require("../assets/data/dummy5/5.jpg"), name: "dummy_view5", type: "dummy5" },
+        //   //{ src: require("../assets/data/dummy5/6.jpg"), name: "dummy_view6", type: "dummy5" }
+        // ],
 
 
       ],
@@ -292,6 +294,7 @@ export default {
 
       },
       shuffledQuestions: [],
+      shuffledChoices: [],
       selectStartTime: null,
       selectFinishTime: null,
       readQuestionStartTime: null,
@@ -312,8 +315,9 @@ export default {
       mouseTrajectoryX: [],
       mouseTrajectoryY: [],
       imgHeight: [100, 100, 100, 100],
-      interval1: null,
-      interval2: null
+      blurnormalInterval: null,
+      blurchangeInterval: null,
+      blureqInterval: null
     };
   },
   created() {
@@ -387,10 +391,10 @@ const allocateToGroup = (questions, groupName) => {
   // 最終的にすべてシャッフルして出題順を決定
   shuffleArray(this.assignment);
 
-  console.log("出題順:", this.assignment);
-  console.log("1問目の手法：", this.assignment[0].group);
-  console.log("1問目の条件：", this.assignment[0].part);
-  console.log("1問目の質問文：", this.assignment[0].text);
+  // console.log("出題順:", this.assignment);
+  // console.log("1問目の手法：", this.assignment[0].group);
+  // console.log("1問目の条件：", this.assignment[0].part);
+  // console.log("1問目の質問文：", this.assignment[0].text);
 
 
     // ------------------
@@ -407,39 +411,8 @@ const allocateToGroup = (questions, groupName) => {
       );
       this.shuffledChoices.push(choicesForCurrentQuestion);
     }
-    console.log("設問：",this.shuffledQuestions);
-    console.log("選択肢：", this.shuffledChoices);
-
-    // // 選択肢をシャッフル
-    // for (let i = 0; i < this.choices.length; i++) {
-    //   this.shuffledChoices[i] = _.shuffle(this.shuffledChoices[i]);
-    // }
+    // console.log("設問：",this.shuffledQuestions);
     // console.log("選択肢：", this.shuffledChoices);
-
-    // // 変化を起こす質問番号を5問ずつ(計10問)選ぶ
-    // let nums = [...Array(20).keys()];
-    // while (this.execDelayQuestionNums.length < 10) {
-    //   let isDummy = false;
-    //   let randIndex = Math.floor(Math.random() * nums.length);
-    //   for (let i = 1; i < 16; i++) {
-    //     if (this.shuffledQuestions[nums[randIndex]] === this.questions["dummy" + String(i)]) {
-    //       isDummy = true;
-    //     }
-    //   }
-    //   if (!isDummy) {
-    //     this.execDelayQuestionNums.push(nums[randIndex]);
-    //   }
-    //   nums.splice(randIndex, 1);
-    // }
-
-
-    // this.execDelayQuestionNums = this.execDelayQuestionNums.sort(function (
-    //   first,
-    //   second
-    // ) {
-    //   return first - second;
-    // });
-    // this.readQuestionStartTime = performance.now();
 
   },
   mounted: function () {
@@ -451,31 +424,33 @@ const allocateToGroup = (questions, groupName) => {
     next();
   },
   methods: {
-    // 各パターンに対応する関数（例）
-    handleBlurPrecd(question) {
-      console.log("Blur + Precd 処理:", question);
-    },
-    handleBlurDelay(question) {
-      console.log("Blur + Delay 処理:", question);
-    },
-    handleBlurEqual(question) {
-      console.log("Blur + Equal 処理:", question);
-    },
-    handlePixelPrecd(question) {
-      console.log("Pixel + Precd 処理:", question);
-    },
-    handlePixelDelay(question) {
-      console.log("Pixel + Delay 処理:", question);
-    },
-    handlePixelEqual(question) {
-      console.log("Pixel + Equal 処理:", question);
-    },
+    // // 各パターンに対応する関数（例）
+    // handleBlurPrecd(question) {
+    //   console.log("Blur + Precd 処理:", question);
+    // },
+    // handleBlurDelay(question) {
+    //   console.log("Blur + Delay 処理:", question);
+    // },
+    // handleBlurEqual(question) {
+    //   console.log("Blur + Equal 処理:", question);
+    // },
+    // handlePixelPrecd(question) {
+    //   console.log("Pixel + Precd 処理:", question);
+    // },
+    // handlePixelDelay(question) {
+    //   console.log("Pixel + Delay 処理:", question);
+    // },
+    // handlePixelEqual(question) {
+    //   console.log("Pixel + Equal 処理:", question);
+    // },
   
     changeOverlay() {
+      // 画面遷移
       this.isShowQuestion = !this.isShowQuestion;
       this.isShowChoices = !this.isShowChoices;
     },
     setImage(imageNumber) {
+      // 画像選択肢の設定
       let img = this.imageIDs[imageNumber];
       img.src = this.shuffledChoices[this.section][imageNumber].src;
     },
@@ -484,128 +459,108 @@ const allocateToGroup = (questions, groupName) => {
       this.readQuestionFinishTime = performance.now();
       this.selectStartTime = performance.now();
 
-      // 画像表示開始のラグ設定
-      const delaySeconds = [0, 10, 20, 30];
-      this.delaySecond = delaySeconds[Math.floor(Math.random() * delaySeconds.length)];
       // 変化を起こす質問ならtrueに
       for (let i = 0; i < this.assignment.length; i++) {
-        if (this.section === i) {
+        if (i === this.section) {
           const currentAssignment = this.assignment[i];
           const question = currentAssignment.text;  // 質問文
           const group = currentAssignment.group;    // 0: blur, 1: pixel
           const part = currentAssignment.part;      // 2: precd, 3: delay, 4: equal
+          // console.log("質問文：",question);
+          // console.log("選択肢：",this.shuffledChoices[i]);
           
           // 条件に応じて関数を分岐
         if (group === 0 && part === 2) {
+          console.log("blur先行");
           this.handleBlurPrecd(question);
         } else if (group === 0 && part === 3) {
+          console.log("blur遅延");
           this.handleBlurDelay(question);
         } else if (group === 0 && part === 4) {
+          console.log("blur等速");
           this.handleBlurEqual(question);
         } else if (group === 1 && part === 2) {
+          console.log("pixel先行");
           this.handlePixelPrecd(question);
         } else if (group === 1 && part === 3) {
+          console.log("pixel遅延");
           this.handlePixelDelay(question);
         } else if (group === 1 && part === 4) {
+          console.log("pixel等速");
           this.handlePixelEqual(question);
         }
       }};
+    },
       //-------------------------------------------------
       
 
-
       //-------------------------------------------------
 
-      // 選択肢を表示
-      if (this.isDelay) {
-        //this.cond = Math.floor(Math.random() * 2);
-        this.cond = 0;
-        // 変化を起こす場所選び
-        this.TargetPosition = Math.floor(Math.random() * 4);
-
-        for (let i = 0; i < this.shuffledChoices[0].length; i++) {
-          this.delaySecond = delaySeconds[Math.floor(Math.random() * delaySeconds.length)];
-
-          if (i === this.TargetPosition) {
-            setTimeout(this.setImage, this.delaySecond, i);
-          } else {
-            setTimeout(this.setImage, this.delaySecond, i);
-          }
+    // 各パターンに対応する関数（例）
+    handleBlurPrecd(question) {
+      console.log("Blur + Precd 処理:", question);
+      this.TargetPosition = Math.floor(Math.random() * 4);
+      requestAnimationFrame(() => {
+        for(let i=0; i<this.shuffledChoices[0].length; i++){
+          this.setImage(i);
         }
-        if (this.cond === 0) {
-          //console.log("1枚早い!");
-          // 1枚だけ先行表示
-          this.interval1 = setInterval(() => {
-            for (let i = 0; i < 4; i++) {
-              if (i !== this.TargetPosition) {
-                blurValues.normal -= blurStep;
-                normalImages.forEach(image => {
-                image.style.filter = `blur(${blurValues.normal}px)`;
-              });
-                // blurValueが0以下になったらインターバルを停止
-                if (blurValues.normal <= 0) {
-                  clearInterval(normalInterval);
-                }
-              }
-            }
-          }, 400);
-          this.interval2 = setInterval(() => {
-            this.imgHeight[this.TargetPosition] -= 20;
-            this.imgHeight.push(0);
-            this.imgHeight.pop();
-          }, 100);
-        } else if (this.cond === 1) {
-          //console.log("1枚遅い!");
-          // 1枚だけ遅延表示
-          this.interval1 = setInterval(() => {
-            for (let i = 0; i < 4; i++) {
-              if (i !== this.TargetPosition) {
-                this.imgHeight[i] -= 20;
-              }
-            }
-            this.imgHeight.push(0);
-            this.imgHeight.pop();
-          }, 100);
-          this.interval2 = setInterval(() => {
-            this.imgHeight[this.TargetPosition] -= 20;
-            this.imgHeight.push(0);
-            this.imgHeight.pop();
-          }, 400);
-        }
-      } else {
-        this.TargetPosition = null;// condが2,3のときはDBに何も書かない
-        this.cond = Math.floor(Math.random() * 2) + 2;
+        this.applyBlurEffect(1000,500,this.shuffledChoices[this.section],this.TargetPosition);
+      });
+    },
 
-        for (let i = 0; i < this.shuffledChoices[0].length; i++) {
-          this.delaySecond = delaySeconds[Math.floor(Math.random() * delaySeconds.length)];
-          setTimeout(this.setImage, this.delaySecond, i);
+    handleBlurDelay(question) {
+      console.log("Blur + Delay 処理:", question);
+      this.TargetPosition = Math.floor(Math.random() * 4);
+      requestAnimationFrame(() => {
+        for(let i=0; i<this.shuffledChoices[0].length; i++){
+          this.setImage(i);
         }
-        if (this.cond === 2) {
-          //console.log("全部遅い!");
+        this.applyBlurEffect(500,1000,this.shuffledChoices[this.section],this.TargetPosition);
+      });
+    },
 
-          this.interval1 = setInterval(() => {
-            for (let i = 0; i < 4; i++) {
-              this.imgHeight[i] -= 20;
-            }
-            this.imgHeight.push(0);
-            this.imgHeight.pop();
-          }, 400);
-        } else if (this.cond === 3) {
-          //console.log("全部早い！");
-          this.interval1 = setInterval(() => {
-            for (let i = 0; i < 4; i++) {
-              this.imgHeight[i] -= 20;
-            }
-            this.imgHeight.push(0);
-            this.imgHeight.pop();
-          }, 100);
+    handleBlurEqual(question) {
+      console.log("Blur + Equal 処理:", question);
+      this.TargetPosition = Math.floor(Math.random() * 4);
+      requestAnimationFrame(() => {
+        for(let i=0; i<this.shuffledChoices[0].length; i++){
+          this.setImage(i);
         }
+        this.applyBlurEffect(1000,1000,this.shuffledChoices[this.section],null);
+      }); 
+    },
+
+    handlePixelPrecd(question) {
+      console.log("Pixel + Precd 処理:", question);
+      this.TargetPosition = Math.floor(Math.random() * 4);
+      for(let i=0; i<this.shuffledChoices[0].length; i++){
+        setTimeout(() => {
+          this.setImage(i);
+          this.applyPixelEffect(200,50,this.shuffledChoices[this.section], this.Targetposition);
+        }, 0);
       }
+    },
 
-      for (let i = 0; i < 4; i++) {
-        this.imgHeight[i] = 100;
+    handlePixelDelay(question) {
+      console.log("Pixel + Delay 処理:", question);
+      this.TargetPosition = Math.floor(Math.random() * 4);
+      for(let i=0; i<this.shuffledChoices[0].length; i++){
+        setTimeout(() => {
+          this.setImage(i);
+          this.applyPixelEffect(50,200,this.shuffledChoices[this.section],this.Targetposition);
+        }, 0);
       }
+    },
 
+    handlePixelEqual(question) {
+      console.log("Pixel + Equal 処理:", question);
+      this.TargetPosition = Math.floor(Math.random() * 4);
+      for(let i=0; i<this.shuffledChoices[0].length; i++){
+        setTimeout(() => {
+          this.setImage(i);
+          this.applyPixelEffect(200,200,this.shuffledChoices[this.section],null);
+        }, 0);
+      }
     },
 
     changeNumToPosition(num) {
@@ -628,13 +583,249 @@ const allocateToGroup = (questions, groupName) => {
       }
       return position;
     },
+    // ここから画像処理の関数　先にblur
+    applyBlurEffect(speed1, speed2, ImageObjects, position = null) {
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // 四方のぼかしを隠すための白い四角形を描画
+    ctx.fillStyle = "red";
+    
+    // 画像要素を取得
+    const images = ImageObjects.map(obj => {
+    const imgElements = document.querySelectorAll(`img[src="${obj.src}"]`);
+
+    return imgElements.length > 0 ?imgElements[0] : null;
+   }).filter(img => img !== null);
+
+    if (images.length === 0) {
+        console.error("画像が取得できませんでした");
+        return;
+    }
+    document.querySelectorAll("img").forEach(image => {
+        image.style.filter = "none";
+    });
+
+    // **既存の処理を完全に停止**
+    if (this.blurnormalInterval) {
+        clearInterval(this.blurnormalInterval);
+        this.blurnormalInterval = null;
+    }
+    if (this.blurchangeInterval) {
+        clearInterval(this.blurchangeInterval);
+        this.blurchangeInterval = null;
+    }
+    if (this.blureqinterval) {
+        clearInterval(this.blureqinterval);
+        this.blureqinterval = null;
+    }
+
+    // 初期化
+    let blurValues = { fast: 20, normal: 20 };
+    const blurStep = 5;
+    
+
+    images.forEach(image => {
+      if(image){
+        image.style.filter = "blur(20px)";
+      }
+    });
+
+    if (position !== null) {
+        // 特定の位置の画像だけ高速処理する場合
+        const changeImage = images[position];
+
+        if (!changeImage) {
+            console.error("指定された position に対応する画像が見つかりません");
+            return;
+        }
+
+        const normalImages = images.filter((_, index) => index !== position);
+
+        requestAnimationFrame(() => {
+
+          // 通常の画像のぼかしを減少させるインターバル
+          this.blurnormalInterval = setInterval(() => {
+              blurValues.normal = Math.max(0, blurValues.normal - blurStep);
+              normalImages.forEach(image => {
+                  if (image) {
+                      image.style.filter = `blur(${blurValues.normal}px)`;
+                  }
+              });
+
+              if (blurValues.normal <= 0) {
+                  clearInterval(this.blurnormalInterval);
+                  this.blurnormalInterval = null;
+              }
+          }, speed1);
+
+          // 高速でぼかしを減少させるインターバル
+          this.blurchangeInterval = setInterval(() => {
+              blurValues.fast = Math.max(0, blurValues.fast - blurStep);
+              if (changeImage) {
+                  changeImage.style.filter = `blur(${blurValues.fast}px)`;
+              }
+
+              if (blurValues.fast <= 0) {
+                  clearInterval(this.blurchangeInterval);
+                  this.blurchangeInterval = null;
+              }
+          }, speed2);
+        });
+    } else {
+        // すべての画像を同じ速度で処理する場合
+        this.blureqinterval = setInterval(() => {
+            blurValues.normal = Math.max(0, blurValues.normal - blurStep);
+            images.forEach(image => {
+                if (image) {
+                    image.style.filter = `blur(${blurValues.normal}px)`;
+                }
+            });
+
+            if (blurValues.normal <= 0) {
+                clearInterval(this.blureqinterval);
+                this.blureqInterval = null;
+            }
+        }, speed1);
+    }},
+
+
+    applyPixelEffect(speed1, speed2, Image, position = null) {
+    // 画像要素を取得
+    const images = Image.map(id => document.getElementById(id)).filter(img => img !== null);
+    
+    if (images.length === 0) {
+        console.error("画像が取得できませんでした");
+        return;
+    }
+
+    // 初期化
+    let mosaicValues = { fast: 500, normal: 500 };
+    const mosaicStep = mosaicValues.normal / 5; // 5ステップで解除
+
+    // clearInterval(this.normalInterval);
+    // clearInterval(this.fastInterval);
+    // clearInterval(this.interval);
+
+    if (position !== null) {
+        // 特定の位置の画像だけ高速処理する場合
+        const changeImage = images[position];
+
+        if (!changeImage) {
+            console.error("指定された position に対応する画像が見つかりません");
+            return;
+        }
+
+        const normalImages = images.filter((_, index) => index !== position);
+
+        // 通常の画像のモザイク解除を減少させるインターバル
+        this.normalInterval = setInterval(() => {
+            mosaicValues.normal = Math.max(0, mosaicValues.normal - mosaicStep);
+            normalImages.forEach((image, index) => this.insertPixelated(index, mosaicValues.normal, images));
+
+            if (mosaicValues.normal <= 0) {
+                clearInterval(normalInterval);
+            }
+        }, speed1);
+
+        // 高速でモザイクを解除するインターバル
+        this.fastInterval = setInterval(() => {
+            mosaicValues.fast = Math.max(0, mosaicValues.fast - mosaicStep);
+            this.insertPixelated(position, mosaicValues.fast, images);
+
+            if (mosaicValues.fast <= 0) {
+                clearInterval(fastInterval);
+            }
+        }, speed2);
+    } else {
+        // すべての画像を同じ速度で処理する場合
+        this.interval = setInterval(() => {
+            mosaicValues.normal = Math.max(0, mosaicValues.normal - mosaicStep);
+            images.forEach((image, index) => this.insertPixelated(index, mosaicValues.normal, images));
+
+            if (mosaicValues.normal <= 0) {
+                clearInterval(interval);
+            }
+        }, speed1);
+    }
+},
+
+/**
+ * 指定した画像にモザイク処理を適用する
+ * @param {number} index - 画像のインデックス
+ * @param {number} mosaicValue - モザイクの強さ
+ * @param {Array} images - 画像要素の配列
+ */
+insertPixelated(index, mosaicValue, images) {
+    const sourceImage = images[index];
+
+    if (!sourceImage) return;
+
+    // すでにピクセル化された画像が存在する場合は削除
+    if (sourceImage.nextSibling && sourceImage.nextSibling.tagName === "CANVAS") {
+        sourceImage.nextSibling.remove();
+    }
+
+    // モザイク解除レベルの決定
+    const blocksize = Math.max(1, Math.floor(mosaicValue / 10));
+
+    // ピクセル化処理
+    const pixelated = this.toPixelated(sourceImage, blocksize);
+
+    sourceImage.style.display = 'none';
+    sourceImage.insertAdjacentElement('afterend', pixelated);
+},
+
+/**
+ * 画像をピクセル化する処理
+ * @param {HTMLElement} imageElement - 画像要素
+ * @param {number} blockSize - ブロックサイズ (デフォルト: 4)
+ * @returns {HTMLCanvasElement} - ピクセル化された画像
+ */
+toPixelated(imageElement, blockSize = 4) {
+    if (!imageElement) return;
+
+    const size = {
+        width: Math.max(1, imageElement.width / blockSize),
+        height: Math.max(1, imageElement.height / blockSize)
+    };
+
+    console.log(imageElement.width, imageElement.height);
+
+    const canvasElement = document.createElement('canvas');
+    canvasElement.width = size.width;
+    canvasElement.height = size.height;
+    const ctx = canvasElement.getContext('2d');
+
+    ctx.drawImage(imageElement, 0, 0, size.width, size.height);
+    ctx.drawImage(canvasElement, 0, 0, imageElement.width, imageElement.height);
+
+    Object.assign(canvasElement.style, {
+        width: `${imageElement.width}px`,
+        height: `${imageElement.height}px`,
+        imageRendering: 'pixelated'
+    });
+
+    return canvasElement;
+},
+
+    // ここまでが画像処理の関数
     toNext(n) {
 
-      clearInterval(this.interval1);
-      clearInterval(this.interval2);
+      //blurの処理をストップ、かつリセットする
+      clearInterval(this.blurnormalInterval);
+      clearInterval(this.blurchangeInterval);
+      clearInterval(this.blureqInterval);
+
+      document.querySelectorAll("img").forEach(image => {
+        image.style.filter = "none";
+      });
+      //pizelの処理をストップ、かつリセットする
+
       // 選択時間の計測終了
       this.selectFinishTime = performance.now();
-      //this.imageIDs.forEach(img => (img.src = ""));
+      this.imageIDs.forEach(img => (img.src = ""));
 
       this.selectedPosition = this.changeNumToPosition(n - 1);
       const noDelayPos = this.changeNumToPosition(this.TargetPosition);
@@ -670,7 +861,6 @@ const allocateToGroup = (questions, groupName) => {
         lowerRight: this.shuffledChoices[this.section][3].name,
         lowerRightHeight: this.imgHeight[3],
         execDelayQuestionNums: execDelay.toString(),
-        delayTime: this.delaySecond,
         cond: this.cond,
         TargetPosition: noDelayPos,
         width: this.wWidth,
@@ -697,9 +887,9 @@ const allocateToGroup = (questions, groupName) => {
             this.isShowChoices = !this.isShowChoices;
             this.section++;
 
-            for (let i = 0; i < 4; i++) {
-              this.imgHeight[i] = 100;
-            }
+            // for (let i = 0; i < 4; i++) {
+            //   this.imgHeight[i] = 100;
+            // }
 
           } else {
             this.$router.replace(`/complete`);
