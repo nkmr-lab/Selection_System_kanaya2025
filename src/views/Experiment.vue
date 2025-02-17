@@ -309,8 +309,9 @@ export default {
       isDelay: false,
       execDelayQuestionNums: [],
       delaySecond: 0,
-      cond: 0,
+      cond: 0, //等速の時の500msか2000msか
       imageIDs: [],
+      images: [],
       selectedPosition: null,
       mouseTrajectoryX: [],
       mouseTrajectoryY: [],
@@ -390,13 +391,6 @@ const allocateToGroup = (questions, groupName) => {
 
   // 最終的にすべてシャッフルして出題順を決定
   shuffleArray(this.assignment);
-
-  // console.log("出題順:", this.assignment);
-  // console.log("1問目の手法：", this.assignment[0].group);
-  // console.log("1問目の条件：", this.assignment[0].part);
-  // console.log("1問目の質問文：", this.assignment[0].text);
-
-
     // ------------------
 
     // 質問順をシャッフル
@@ -411,8 +405,6 @@ const allocateToGroup = (questions, groupName) => {
       );
       this.shuffledChoices.push(choicesForCurrentQuestion);
     }
-    // console.log("設問：",this.shuffledQuestions);
-    // console.log("選択肢：", this.shuffledChoices);
 
   },
   mounted: function () {
@@ -424,25 +416,6 @@ const allocateToGroup = (questions, groupName) => {
     next();
   },
   methods: {
-    // // 各パターンに対応する関数（例）
-    // handleBlurPrecd(question) {
-    //   console.log("Blur + Precd 処理:", question);
-    // },
-    // handleBlurDelay(question) {
-    //   console.log("Blur + Delay 処理:", question);
-    // },
-    // handleBlurEqual(question) {
-    //   console.log("Blur + Equal 処理:", question);
-    // },
-    // handlePixelPrecd(question) {
-    //   console.log("Pixel + Precd 処理:", question);
-    // },
-    // handlePixelDelay(question) {
-    //   console.log("Pixel + Delay 処理:", question);
-    // },
-    // handlePixelEqual(question) {
-    //   console.log("Pixel + Equal 処理:", question);
-    // },
   
     changeOverlay() {
       // 画面遷移
@@ -466,27 +439,19 @@ const allocateToGroup = (questions, groupName) => {
           const question = currentAssignment.text;  // 質問文
           const group = currentAssignment.group;    // 0: blur, 1: pixel
           const part = currentAssignment.part;      // 2: precd, 3: delay, 4: equal
-          // console.log("質問文：",question);
-          // console.log("選択肢：",this.shuffledChoices[i]);
           
           // 条件に応じて関数を分岐
         if (group === 0 && part === 2) {
-          console.log("blur先行");
           this.handleBlurPrecd(question);
         } else if (group === 0 && part === 3) {
-          console.log("blur遅延");
           this.handleBlurDelay(question);
         } else if (group === 0 && part === 4) {
-          console.log("blur等速");
           this.handleBlurEqual(question);
         } else if (group === 1 && part === 2) {
-          console.log("pixel先行");
           this.handlePixelPrecd(question);
         } else if (group === 1 && part === 3) {
-          console.log("pixel遅延");
           this.handlePixelDelay(question);
         } else if (group === 1 && part === 4) {
-          console.log("pixel等速");
           this.handlePixelEqual(question);
         }
       }};
@@ -500,66 +465,119 @@ const allocateToGroup = (questions, groupName) => {
     handleBlurPrecd(question) {
       console.log("Blur + Precd 処理:", question);
       this.TargetPosition = Math.floor(Math.random() * 4);
+      console.log("変化させる箇所：",this.TargetPosition);
       requestAnimationFrame(() => {
         for(let i=0; i<this.shuffledChoices[0].length; i++){
           this.setImage(i);
         }
-        this.applyBlurEffect(1000,500,this.shuffledChoices[this.section],this.TargetPosition);
+        this.applyBlurEffect(2000,500,this.shuffledChoices[this.section],this.TargetPosition);
       });
     },
 
     handleBlurDelay(question) {
       console.log("Blur + Delay 処理:", question);
       this.TargetPosition = Math.floor(Math.random() * 4);
+      console.log("変化させる箇所：",this.TargetPosition);
       requestAnimationFrame(() => {
         for(let i=0; i<this.shuffledChoices[0].length; i++){
           this.setImage(i);
         }
-        this.applyBlurEffect(500,1000,this.shuffledChoices[this.section],this.TargetPosition);
+        this.applyBlurEffect(500,2000,this.shuffledChoices[this.section],this.TargetPosition);
       });
     },
 
     handleBlurEqual(question) {
       console.log("Blur + Equal 処理:", question);
       this.TargetPosition = Math.floor(Math.random() * 4);
+      this.cond = Math.floor(Math.random() * 2);
       requestAnimationFrame(() => {
         for(let i=0; i<this.shuffledChoices[0].length; i++){
           this.setImage(i);
         }
-        this.applyBlurEffect(1000,1000,this.shuffledChoices[this.section],null);
+        if(this.cond == 0){
+          console.log("Blur + Equal 処理（2,000ms）:", question);
+          this.applyBlurEffect(2000,2000,this.shuffledChoices[this.section],null);
+        }else{
+        console.log("Blur + Equal 処理（500ms）:", question);
+          this.applyBlurEffect(500,500,this.shuffledChoices[this.section],null);
+        }
       }); 
     },
 
     handlePixelPrecd(question) {
-      console.log("Pixel + Precd 処理:", question);
-      this.TargetPosition = Math.floor(Math.random() * 4);
-      for(let i=0; i<this.shuffledChoices[0].length; i++){
-        setTimeout(() => {
-          this.setImage(i);
-          this.applyPixelEffect(200,50,this.shuffledChoices[this.section], this.Targetposition);
-        }, 0);
-      }
-    },
+    console.log("Pixel + Precd 処理:", question);
+    this.TargetPosition = Math.floor(Math.random() * 4);
+    console.log("変化させる箇所：", this.TargetPosition);
 
-    handlePixelDelay(question) {
-      console.log("Pixel + Delay 処理:", question);
-      this.TargetPosition = Math.floor(Math.random() * 4);
-      for(let i=0; i<this.shuffledChoices[0].length; i++){
-        setTimeout(() => {
-          this.setImage(i);
-          this.applyPixelEffect(50,200,this.shuffledChoices[this.section],this.Targetposition);
-        }, 0);
-      }
-    },
+    let imagesLoaded = 1;
+
+    // **画像の描画が完了したらピクセル処理**
+    for (let i = 0; i < this.shuffledChoices[0].length; i++) {
+        const img = new Image();
+        img.src = this.shuffledChoices[this.section][i].src;
+        img.onload = () => {
+            this.setImage(i); // 画像をセット
+            setTimeout(() => {
+              imagesLoaded++;
+                if (imagesLoaded === 4) {
+                    this.applyPixelEffect(2000, 500, this.shuffledChoices[this.section], this.TargetPosition);
+                }
+            }, 50);  // **描画の遅延を調整**
+        };
+    }
+ },
+
+  handlePixelDelay(question) {
+    console.log("Pixel + Delay 処理:", question);
+    this.TargetPosition = Math.floor(Math.random() * 4);
+    console.log("変化させる箇所：", this.TargetPosition);
+    
+    let imagesLoaded = 1;
+    for (let i = 0; i < this.shuffledChoices[0].length; i++) {
+        const img = new Image();
+        img.src = this.shuffledChoices[this.section][i].src;
+        img.onload = () => {
+            this.setImage(i); // 画像をセット
+            setTimeout(() => {
+              imagesLoaded++;
+                if (imagesLoaded === 4) {
+                  this.applyPixelEffect(500,2000,this.shuffledChoices[this.section], this.TargetPosition);
+                }
+            }, 50);  // **描画の遅延を調整**
+        };
+    }
+ },
 
     handlePixelEqual(question) {
       console.log("Pixel + Equal 処理:", question);
       this.TargetPosition = Math.floor(Math.random() * 4);
-      for(let i=0; i<this.shuffledChoices[0].length; i++){
-        setTimeout(() => {
-          this.setImage(i);
-          this.applyPixelEffect(200,200,this.shuffledChoices[this.section],null);
-        }, 0);
+
+    let imagesLoaded = 0;
+
+      this.cond = Math.floor(Math.random() * 2);
+      // **画像の描画が完了したらピクセル処理**
+    for (let i = 0; i < this.shuffledChoices[0].length; i++) {
+        const img = new Image();
+        img.src = this.shuffledChoices[this.section][i].src;
+
+        img.onload = () => {
+            this.setImage(i); // 画像をセット
+
+            setTimeout(() => {
+                //this.insertPixelated(i, 500, images);
+                imagesLoaded++;
+
+                if (imagesLoaded === 4) {
+                    if(this.cond == 0){
+                      console.log("Pixel + Equal 処理（2,000ms）:", question);
+                      this.applyPixelEffect(2000,2000,this.shuffledChoices[this.section],null);
+                    }else{
+                      console.log("Pixel + Equal 処理（500ms）:", question);
+                      this.applyPixelEffect(500,500,this.shuffledChoices[this.section],null);
+                    }
+                }
+            }, 50);  // **描画の遅延を調整**
+        };
       }
     },
 
@@ -625,7 +643,7 @@ const allocateToGroup = (questions, groupName) => {
     let blurValues = { fast: 20, normal: 20 };
     const blurStep = 5;
     
-
+    //選択画面に遷移した時からblurをかけておく
     images.forEach(image => {
       if(image){
         image.style.filter = "blur(20px)";
@@ -690,62 +708,72 @@ const allocateToGroup = (questions, groupName) => {
         }, speed1);
     }},
 
+    // ここからpixel処理～～
+applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
+   // 画像要素を取得 (applyBlurEffect() と統一)
+   this.images = ImageObjects.map(obj => {
+      //  const imgElements = document.querySelectorAll(`img[src="${obj.src}"]`);
+      const imgElements = Array.from(document.querySelectorAll('img')).filter(img => img.src.endsWith(obj.src));
+       return imgElements.length > 0 ? imgElements[0] : null;
+   }).filter(img => img !== null);
 
-    applyPixelEffect(speed1, speed2, Image, position = null) {
-    // 画像要素を取得
-    const images = Image.map(id => document.getElementById(id)).filter(img => img !== null);
-    
-    if (images.length === 0) {
-        console.error("画像が取得できませんでした");
-        return;
-    }
+   if (this.images.length === 0) {
+       console.error("❌ applyPixelEffect: 画像が取得できませんでした");
+       return;
+   }
 
-    // 初期化
+   console.log("✅ 取得した画像要素:", this.images);
+   console.log("position:", position);
+   console.log("右下の画像：",this. images[3]);
+
+    // **4枚すべてに最初にピクセル処理を適用**
+    this.images.forEach((image, index) => {
+        this.insertPixelated(index, 500, this.images);
+    });
+
     let mosaicValues = { fast: 500, normal: 500 };
     const mosaicStep = mosaicValues.normal / 5; // 5ステップで解除
 
-    // clearInterval(this.normalInterval);
-    // clearInterval(this.fastInterval);
-    // clearInterval(this.interval);
-
     if (position !== null) {
-        // 特定の位置の画像だけ高速処理する場合
-        const changeImage = images[position];
+        // **特定の1枚を高速解除、それ以外を通常解除**
+        //const fastImage = images[position];
+        // const normalImages = images.filter((_, idx) => idx !== position);
+        var normalImages = this.images.map((_, index) => index).filter(index => index !== position); 
 
-        if (!changeImage) {
-            console.error("指定された position に対応する画像が見つかりません");
-            return;
-        }
-
-        const normalImages = images.filter((_, index) => index !== position);
-
-        // 通常の画像のモザイク解除を減少させるインターバル
-        this.normalInterval = setInterval(() => {
+        this.pixelnormalInterval = setInterval(() => {
             mosaicValues.normal = Math.max(0, mosaicValues.normal - mosaicStep);
-            normalImages.forEach((image, index) => this.insertPixelated(index, mosaicValues.normal, images));
+            normalImages.forEach((idx) => {
+                this.insertPixelated(idx, mosaicValues.normal, this.images);
+            });
 
             if (mosaicValues.normal <= 0) {
-                clearInterval(normalInterval);
+                clearInterval(this.pixelnormalInterval);
+                this.pixelnormalInterval = null;
             }
         }, speed1);
 
-        // 高速でモザイクを解除するインターバル
-        this.fastInterval = setInterval(() => {
-            mosaicValues.fast = Math.max(0, mosaicValues.fast - mosaicStep);
-            this.insertPixelated(position, mosaicValues.fast, images);
+        if(position >= 0 && position < this.images.length){
+          this.pixelchangeInterval = setInterval(() => {
+              mosaicValues.fast = Math.max(0, mosaicValues.fast - mosaicStep);
+              this.insertPixelated(position, mosaicValues.fast, this.images);
 
-            if (mosaicValues.fast <= 0) {
-                clearInterval(fastInterval);
-            }
-        }, speed2);
+              if (mosaicValues.fast <= 0) {
+                  clearInterval(this.pixelchangeInterval);
+                  this.pixelchangeInterval = null;
+              }
+          }, speed2);
+       }
     } else {
-        // すべての画像を同じ速度で処理する場合
-        this.interval = setInterval(() => {
+        // **すべての画像のピクセル処理を同時に解除**
+        this.pixeleqinterval = setInterval(() => {
             mosaicValues.normal = Math.max(0, mosaicValues.normal - mosaicStep);
-            images.forEach((image, index) => this.insertPixelated(index, mosaicValues.normal, images));
+            this.images.forEach((image, index) => {
+                this.insertPixelated(index, mosaicValues.normal, this.images);
+            });
 
             if (mosaicValues.normal <= 0) {
-                clearInterval(interval);
+                clearInterval(this.pixeleqinterval);
+                this.pixeleqinterval = null;
             }
         }, speed1);
     }
@@ -757,24 +785,29 @@ const allocateToGroup = (questions, groupName) => {
  * @param {number} mosaicValue - モザイクの強さ
  * @param {Array} images - 画像要素の配列
  */
-insertPixelated(index, mosaicValue, images) {
+ insertPixelated(index, mosaicValue, images) {
     const sourceImage = images[index];
+
 
     if (!sourceImage) return;
 
-    // すでにピクセル化された画像が存在する場合は削除
-    if (sourceImage.nextSibling && sourceImage.nextSibling.tagName === "CANVAS") {
-        sourceImage.nextSibling.remove();
+    // **すでにピクセル化された canvas が存在する場合は削除**
+    const existingCanvas = sourceImage.parentElement.querySelector('canvas.pixelated');
+    if (existingCanvas) {
+        existingCanvas.remove();
     }
 
-    // モザイク解除レベルの決定
+    // **モザイク解除レベルの決定**
     const blocksize = Math.max(1, Math.floor(mosaicValue / 10));
 
-    // ピクセル化処理
+    // **ピクセル化処理**
     const pixelated = this.toPixelated(sourceImage, blocksize);
 
-    sourceImage.style.display = 'none';
-    sourceImage.insertAdjacentElement('afterend', pixelated);
+    // **元の画像を visibility: hidden にし、レイアウトを維持**
+    sourceImage.style.visibility = 'hidden';
+
+    // **`canvas` を `sourceImage` の親要素に追加**
+    sourceImage.parentElement.appendChild(pixelated);
 },
 
 /**
@@ -783,45 +816,72 @@ insertPixelated(index, mosaicValue, images) {
  * @param {number} blockSize - ブロックサイズ (デフォルト: 4)
  * @returns {HTMLCanvasElement} - ピクセル化された画像
  */
-toPixelated(imageElement, blockSize = 4) {
+ toPixelated(imageElement, blockSize = 4) {
     if (!imageElement) return;
 
-    const size = {
-        width: Math.max(1, imageElement.width / blockSize),
-        height: Math.max(1, imageElement.height / blockSize)
-    };
+    // **表示されている画像サイズを取得**
+    const displayWidth = imageElement.offsetWidth;
+    const displayHeight = imageElement.offsetHeight;
 
-    console.log(imageElement.width, imageElement.height);
+    // **ピクセル化のための縮小サイズを計算**
+    const pixelatedWidth = Math.max(1, Math.floor(displayWidth / blockSize));
+    const pixelatedHeight = Math.max(1, Math.floor(displayHeight / blockSize));
 
+    // **キャンバスを作成**
     const canvasElement = document.createElement('canvas');
-    canvasElement.width = size.width;
-    canvasElement.height = size.height;
+    canvasElement.classList.add("pixelated");
+    canvasElement.width = displayWidth;
+    canvasElement.height = displayHeight;
+
     const ctx = canvasElement.getContext('2d');
 
-    ctx.drawImage(imageElement, 0, 0, size.width, size.height);
-    ctx.drawImage(canvasElement, 0, 0, imageElement.width, imageElement.height);
+    // **縮小してモザイク化**
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = pixelatedWidth;
+    tempCanvas.height = pixelatedHeight;
+    const tempCtx = tempCanvas.getContext('2d');
 
+    tempCtx.drawImage(imageElement, 0, 0, pixelatedWidth, pixelatedHeight);
+
+    // **拡大して元のサイズに戻す**
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(tempCanvas, 0, 0, pixelatedWidth, pixelatedHeight, 0, 0, displayWidth, displayHeight);
+
+    // **キャンバスを元の画像の上に正確に配置**
     Object.assign(canvasElement.style, {
-        width: `${imageElement.width}px`,
-        height: `${imageElement.height}px`,
-        imageRendering: 'pixelated'
+        width: `${displayWidth}px`,
+        height: `${displayHeight}px`,
+        imageRendering: 'pixelated',
+        position: "absolute",
+        top: `${imageElement.offsetTop}px`,
+        left: `${imageElement.offsetLeft}px`,
+        zIndex: "10",
     });
 
     return canvasElement;
 },
 
+
+
     // ここまでが画像処理の関数
     toNext(n) {
 
-      //blurの処理をストップ、かつリセットする
-      clearInterval(this.blurnormalInterval);
-      clearInterval(this.blurchangeInterval);
-      clearInterval(this.blureqInterval);
+      // **blur & pixel の処理をストップ**
+    clearInterval(this.blurnormalInterval);
+    clearInterval(this.blurchangeInterval);
+    clearInterval(this.blureqInterval);
+    clearInterval(this.pixelnormalInterval);
+    clearInterval(this.pixelchangeInterval);
+    clearInterval(this.pixeleqinterval);
 
-      document.querySelectorAll("img").forEach(image => {
-        image.style.filter = "none";
-      });
-      //pizelの処理をストップ、かつリセットする
+    // **ピクセル処理のために追加された canvas(pixelated) のみ削除**
+    document.querySelectorAll("canvas.pixelated").forEach(canvas => canvas.remove());
+
+    // **画像の表示をリセット（ピクセル処理で非表示にした画像を元に戻す）**
+    document.querySelectorAll("img").forEach(image => {
+        image.style.visibility = 'visible'; // もし非表示になっていたら元に戻す
+        image.style.filter = 'none'; // ぼかしやモザイクを解除
+    });
 
       // 選択時間の計測終了
       this.selectFinishTime = performance.now();
@@ -887,10 +947,6 @@ toPixelated(imageElement, blockSize = 4) {
             this.isShowChoices = !this.isShowChoices;
             this.section++;
 
-            // for (let i = 0; i < 4; i++) {
-            //   this.imgHeight[i] = 100;
-            // }
-
           } else {
             this.$router.replace(`/complete`);
           }
@@ -921,19 +977,3 @@ toPixelated(imageElement, blockSize = 4) {
   }
 };
 </script>
-
-<style scoped>
-img {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-.blurred {
-    filter: blur(15px); /* 初期状態でぼかしを設定 */
-    transition: filter 0.5s linear; /* ぼかし解除のアニメーション */
-    width: 100%; /* 枠内に画像をフィットさせる */
-    border-radius: 5px; /* 画像自体の角も少し丸める */
-    display: block; /* 画像のスペース確保 */
-}
-</style>
