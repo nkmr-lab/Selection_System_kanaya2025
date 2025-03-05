@@ -2,7 +2,8 @@
   <div class="Research">
     <div style="margin:auto;">
       <!-- 質問画面 -->
-      <v-overlay opacity="1" color="white" v-show="isShowQuestion" absolute style="padding: 16px; ">
+      <v-overlay opacity="1" color="white" v-show="isShowQuestion" absolute style="padding: 16px; width: 1280px; height: 720px; transform-origin: 0 0;"
+      :style="{ transform: 'scale(' + (!this.$store.state.pixelDensity ? 1 : (240 * this.$store.state.pixelDensity) / 1280) + ')' }">
         <v-sheet tile color="white" class="mx-auto">
           <h1 class="text-center black--text text-4xl font-bold">
             Q{{ section + 1 }}. {{ this.shuffledQuestions[this.section] }}
@@ -11,8 +12,10 @@
         <v-btn class="d-flex mx-auto px-auto mt-10 my-5 x-large" height="60" width="100" color="primary" @click="
         changeOverlay();
       imageDisplay();
-      getMouseTrajectory();
-      ">
+      getMouseTrajectory();"
+      style="transform-origin: center 0;"
+      :style="{ transform: 'scale(' + (!this.$store.state.pixelDensity ? 1 : 1280 / (240 * this.$store.state.pixelDensity)) + ')' }"
+      >
           選ぶ
         </v-btn>
       </v-overlay>
@@ -35,7 +38,9 @@
                   style="margin: 20px; padding: 0;">
                   <!-- <canvas id="canvas" width="740" height="484"></canvas> -->
                    <canvas id="canvas" width="0" height="0"></canvas>
-                  <img src="" style="width: 100%;"/>
+                  <div class="w-full h-full overflow-hidden">
+                    <img src="" style="width: 100%;"/>
+                  </div>
                   <!--<div :style="{ height: imgHeight[n - 1]  + '%' }"
                     style="position: absolute; bottom: -10px; left: -10px; width: calc(100% + 20px); display: center; align-items: center;justify-content: center; background: rgba(255,255,255,0.5);">
                   </div>-->
