@@ -307,15 +307,14 @@ export default {
       wHeight: window.innerHeight,
       TargetPosition: 0,
       isDelay: false,
-      execDelayQuestionNums: [],
-      delaySecond: 0,
-      cond: 0, //等速の時の500msか2000msか
+      group: null,
+      part: null,
+      cond: null, //等速の時の500msか2000msか
       imageIDs: [],
       images: [],
       selectedPosition: null,
       mouseTrajectoryX: [],
       mouseTrajectoryY: [],
-      imgHeight: [100, 100, 100, 100],
       blurnormalInterval: null,
       blurchangeInterval: null,
       blureqInterval: null
@@ -437,58 +436,58 @@ const allocateToGroup = (questions, groupName) => {
         if (i === this.section) {
           const currentAssignment = this.assignment[i];
           const question = currentAssignment.text;  // 質問文
-          const group = currentAssignment.group;    // 0: blur, 1: pixel
-          const part = currentAssignment.part;      // 2: precd, 3: delay, 4: equal
+          this.group = currentAssignment.group;    // 0: blur, 1: pixel
+          this.part = currentAssignment.part;      // 2: precd, 3: delay, 4: equal
+          console.log("method:",this.group,"speed:",this.part);
           
           // 条件に応じて関数を分岐
-        if (group === 0 && part === 2) {
+        if (this.group === 0 && this.part === 2) {
           this.handleBlurPrecd(question);
-        } else if (group === 0 && part === 3) {
+        } else if (this.group === 0 && this.part === 3) {
           this.handleBlurDelay(question);
-        } else if (group === 0 && part === 4) {
+        } else if (this.group === 0 && this.part === 4) {
           this.handleBlurEqual(question);
-        } else if (group === 1 && part === 2) {
+        } else if (this.group === 1 && this.part === 2) {
           this.handlePixelPrecd(question);
-        } else if (group === 1 && part === 3) {
+        } else if (this.group === 1 && this.part === 3) {
           this.handlePixelDelay(question);
-        } else if (group === 1 && part === 4) {
+        } else if (this.group === 1 && this.part === 4) {
           this.handlePixelEqual(question);
         }
       }};
     },
-      //-------------------------------------------------
-      
-
       //-------------------------------------------------
 
     // 各パターンに対応する関数（例）
     handleBlurPrecd(question) {
       console.log("Blur + Precd 処理:", question);
       this.TargetPosition = Math.floor(Math.random() * 4);
+      this.cond = null;
       console.log("変化させる箇所：",this.TargetPosition);
       requestAnimationFrame(() => {
         for(let i=0; i<this.shuffledChoices[0].length; i++){
           this.setImage(i);
         }
-        this.applyBlurEffect(2000,500,this.shuffledChoices[this.section],this.TargetPosition);
+        this.applyBlurEffect(500,125,this.shuffledChoices[this.section],this.TargetPosition);
       });
     },
 
     handleBlurDelay(question) {
       console.log("Blur + Delay 処理:", question);
       this.TargetPosition = Math.floor(Math.random() * 4);
+      this.cond = null;
       console.log("変化させる箇所：",this.TargetPosition);
       requestAnimationFrame(() => {
         for(let i=0; i<this.shuffledChoices[0].length; i++){
           this.setImage(i);
         }
-        this.applyBlurEffect(500,2000,this.shuffledChoices[this.section],this.TargetPosition);
+        this.applyBlurEffect(125,500,this.shuffledChoices[this.section],this.TargetPosition);
       });
     },
 
     handleBlurEqual(question) {
       console.log("Blur + Equal 処理:", question);
-      this.TargetPosition = Math.floor(Math.random() * 4);
+      this.TargetPosition = null;
       this.cond = Math.floor(Math.random() * 2);
       requestAnimationFrame(() => {
         for(let i=0; i<this.shuffledChoices[0].length; i++){
@@ -496,10 +495,10 @@ const allocateToGroup = (questions, groupName) => {
         }
         if(this.cond == 0){
           console.log("Blur + Equal 処理（2,000ms）:", question);
-          this.applyBlurEffect(2000,2000,this.shuffledChoices[this.section],null);
+          this.applyBlurEffect(500,500,this.shuffledChoices[this.section],null);
         }else{
         console.log("Blur + Equal 処理（500ms）:", question);
-          this.applyBlurEffect(500,500,this.shuffledChoices[this.section],null);
+          this.applyBlurEffect(125,125,this.shuffledChoices[this.section],null);
         }
       }); 
     },
@@ -507,6 +506,7 @@ const allocateToGroup = (questions, groupName) => {
     handlePixelPrecd(question) {
     console.log("Pixel + Precd 処理:", question);
     this.TargetPosition = Math.floor(Math.random() * 4);
+    this.cond = null;
     console.log("変化させる箇所：", this.TargetPosition);
 
     let imagesLoaded = 1;
@@ -520,16 +520,17 @@ const allocateToGroup = (questions, groupName) => {
             setTimeout(() => {
               imagesLoaded++;
                 if (imagesLoaded === 4) {
-                    this.applyPixelEffect(2000, 500, this.shuffledChoices[this.section], this.TargetPosition);
+                    this.applyPixelEffect(500, 125, this.shuffledChoices[this.section], this.TargetPosition);
                 }
-            }, 50);  // **描画の遅延を調整**
+            }, 10);  // **描画の遅延を調整**
         };
     }
- },
+    },
 
-  handlePixelDelay(question) {
+    handlePixelDelay(question) {
     console.log("Pixel + Delay 処理:", question);
     this.TargetPosition = Math.floor(Math.random() * 4);
+    this.cond = null;
     console.log("変化させる箇所：", this.TargetPosition);
     
     let imagesLoaded = 1;
@@ -541,18 +542,18 @@ const allocateToGroup = (questions, groupName) => {
             setTimeout(() => {
               imagesLoaded++;
                 if (imagesLoaded === 4) {
-                  this.applyPixelEffect(500,2000,this.shuffledChoices[this.section], this.TargetPosition);
+                  this.applyPixelEffect(125,500,this.shuffledChoices[this.section], this.TargetPosition);
                 }
-            }, 50);  // **描画の遅延を調整**
+            }, 10);  // **描画の遅延を調整**
         };
     }
- },
+    },
 
     handlePixelEqual(question) {
       console.log("Pixel + Equal 処理:", question);
-      this.TargetPosition = Math.floor(Math.random() * 4);
+      this.TargetPosition = null;
 
-    let imagesLoaded = 0;
+      let imagesLoaded = 0;
 
       this.cond = Math.floor(Math.random() * 2);
       // **画像の描画が完了したらピクセル処理**
@@ -570,13 +571,13 @@ const allocateToGroup = (questions, groupName) => {
                 if (imagesLoaded === 4) {
                     if(this.cond == 0){
                       console.log("Pixel + Equal 処理（2,000ms）:", question);
-                      this.applyPixelEffect(2000,2000,this.shuffledChoices[this.section],null);
+                      this.applyPixelEffect(500,500,this.shuffledChoices[this.section],null);
                     }else{
                       console.log("Pixel + Equal 処理（500ms）:", question);
-                      this.applyPixelEffect(500,500,this.shuffledChoices[this.section],null);
+                      this.applyPixelEffect(125,125,this.shuffledChoices[this.section],null);
                     }
                 }
-            }, 50);  // **描画の遅延を調整**
+            }, 10);  // **描画の遅延を調整**
         };
       }
     },
@@ -600,6 +601,37 @@ const allocateToGroup = (questions, groupName) => {
           position = "";
       }
       return position;
+    },
+    changeNumToMethods(num){
+      let image_methods = "";
+      switch (num){
+      case 0:
+        image_methods = "blur";
+        break;
+      case 1:
+        image_methods = "pixel";
+        break;
+      default:
+       image_methods = "";
+      } 
+      return image_methods;
+    },
+    changeNumToSpeed(num){
+    let image_speed = "";
+      switch (num){
+      case 2:
+        image_speed = "先行";
+        break;
+      case 3:
+        image_speed = "遅延";
+        break;
+      case 4:
+        image_speed = "等速";
+        break;
+      default:
+       image_speed = "";
+      } 
+      return image_speed;
     },
     // ここから画像処理の関数　先にblur
     applyBlurEffect(speed1, speed2, ImageObjects, position = null) {
@@ -709,7 +741,7 @@ const allocateToGroup = (questions, groupName) => {
     }},
 
     // ここからpixel処理～～
-applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
+    applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
    // 画像要素を取得 (applyBlurEffect() と統一)
    this.images = ImageObjects.map(obj => {
       //  const imgElements = document.querySelectorAll(`img[src="${obj.src}"]`);
@@ -721,10 +753,6 @@ applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
        console.error("❌ applyPixelEffect: 画像が取得できませんでした");
        return;
    }
-
-   console.log("✅ 取得した画像要素:", this.images);
-   console.log("position:", position);
-   console.log("右下の画像：",this. images[3]);
 
     // **4枚すべてに最初にピクセル処理を適用**
     this.images.forEach((image, index) => {
@@ -777,7 +805,7 @@ applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
             }
         }, speed1);
     }
-},
+    },
 
 /**
  * 指定した画像にモザイク処理を適用する
@@ -865,7 +893,6 @@ applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
 
     // ここまでが画像処理の関数
     toNext(n) {
-
       // **blur & pixel の処理をストップ**
     clearInterval(this.blurnormalInterval);
     clearInterval(this.blurchangeInterval);
@@ -889,8 +916,8 @@ applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
 
       this.selectedPosition = this.changeNumToPosition(n - 1);
       const noDelayPos = this.changeNumToPosition(this.TargetPosition);
-      // 送信時にわかりやすくするため遅延実行の質問番号を1始まりにする
-      const execDelay = this.execDelayQuestionNums.map(value => value + 1);
+      const image_method = this.changeNumToMethods(this.assignment[this.section].group);
+      const image_speed = this.changeNumToSpeed(this.assignment[this.section].part);
       let posX = 0;
       let posY = 0;
       if (this.mouseTrajectoryX[this.mouseTrajectoryX.length - 1] === undefined) {
@@ -902,8 +929,18 @@ applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
         posX = this.mouseTrajectoryX[this.mouseTrajectoryX.length - 1];
         posY = this.mouseTrajectoryY[this.mouseTrajectoryY.length - 1];
       }
+
+      if(this.cond === null){
+        //condがnull（先行・遅延のとき）のときはDBに何も書きこまない
+        this.cond = -1;
+      }
+      
+
+        
+
+
       // 男女に応じてたたくapi変える
-      axios.post("https://kanaya.nkmr.io/Selection202408_female/five_delay_female_result_post.php", {
+      axios.post("https://kanaya.nkmr.io/Selection_System_hcs202505/five_delay_female_result_post.php", {
         uuid: this.$store.state.uuid,
         sex: this.$store.state.sex,
         age: this.$store.state.age,
@@ -913,14 +950,11 @@ applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
         selectedItem: this.shuffledChoices[this.section][n - 1].name,
         selectedPosition: this.selectedPosition,
         upperLeft: this.shuffledChoices[this.section][0].name,
-        upperLeftHeight: this.imgHeight[0],
         upperRight: this.shuffledChoices[this.section][1].name,
-        upperRightHeight: this.imgHeight[1],
         lowerLeft: this.shuffledChoices[this.section][2].name,
-        lowerLeftHeight: this.imgHeight[2],
         lowerRight: this.shuffledChoices[this.section][3].name,
-        lowerRightHeight: this.imgHeight[3],
-        execDelayQuestionNums: execDelay.toString(),
+        method: image_method,
+        speed: image_speed,
         cond: this.cond,
         TargetPosition: noDelayPos,
         width: this.wWidth,
@@ -935,8 +969,6 @@ applyPixelEffect(speed1, speed2, ImageObjects, position = null) {
             this.isShowQuestion = !this.isShowQuestion;
             this.isShowChoices = !this.isShowChoices;
             this.section++;
-
-
           } else {
             this.$router.replace(`/complete`);
           }

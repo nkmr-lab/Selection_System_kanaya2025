@@ -42,7 +42,7 @@
               <v-col cols="12">
                 <v-row justify="end" align="center" class="my-n3">
                   <v-col>
-                    手順2、3を<strong>20回</strong>繰り返していただきます。
+                    手順2、3を<strong>22回</strong>繰り返していただきます。
                   </v-col>
                   <v-checkbox v-model="check" class="" label="" value="checked5"></v-checkbox>
                 </v-row>
