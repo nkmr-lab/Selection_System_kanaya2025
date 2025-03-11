@@ -197,7 +197,7 @@ export default {
           //{ src: require("../assets/data/waterfall/5.jpg"), name: "waterfall5", type: "waterfall" },
           { src: require("../assets/data/waterfall/6.jpg"), name: "waterfall6", type: "waterfall" }
         ],
-        // アクション漫画
+        // 漫画
         [
           { src: require("../assets/data/manga/1.jpg"), name: "manga1", type: "manga" },
           { src: require("../assets/data/manga/2.jpg"), name: "manga2", type: "manga" },
@@ -212,11 +212,18 @@ export default {
           { src: require("../assets/data/vacuum/4.jpg"), name: "vacuum4", type: "vacuum" }
         ],
          // 映画
-         [
-          { src: require("../assets/data/movie_edo/1.jpg"), name: "movie_edo1", type: "movie" },
-          { src: require("../assets/data/movie_edo/2.jpg"), name: "movie_edo2", type: "movie" },
-          { src: require("../assets/data/movie_edo/3.jpg"), name: "movie_edo3", type: "movie" },
-          { src: require("../assets/data/movie_edo/4.jpg"), name: "movie_edo4", type: "movie" }
+        [
+          { src: require("../assets/data/movie/1.jpg"), name: "movie1", type: "movie" },
+          { src: require("../assets/data/movie/2.jpg"), name: "movie2", type: "movie" },
+          { src: require("../assets/data/movie/3.jpg"), name: "movie3", type: "movie" },
+          { src: require("../assets/data/movie/4.jpg"), name: "movie4", type: "movie" }
+        ],
+        //ジャケ写
+        [
+          { src: require("../assets/data/music/1.jpg"), name: "music1", type: "music" },
+          { src: require("../assets/data/music/2.jpg"), name: "music2", type: "music" },
+          { src: require("../assets/data/music/3.jpg"), name: "music3", type: "music" },
+          { src: require("../assets/data/music/4.jpg"), name: "music4", type: "music" }
         ],
 
         // ダミー質問1
@@ -255,15 +262,15 @@ export default {
           //{ src: require("../assets/data/dummy4/5.jpg"), name: "dummy_circle5", type: "dummy4" },
           //{ src: require("../assets/data/dummy4/6.jpg"), name: "dummy_circle6", type: "dummy4" },
         ],
-        // // ダミー質問5
-        // [
-        //   { src: require("../assets/data/dummy5/1.jpg"), name: "dummy_view1", type: "dummy5" },
-        //   { src: require("../assets/data/dummy5/2.jpg"), name: "dummy_view2", type: "dummy5" },
-        //   { src: require("../assets/data/dummy5/3.jpg"), name: "dummy_view3", type: "dummy5" },
-        //   { src: require("../assets/data/dummy5/4.jpg"), name: "dummy_view4", type: "dummy5" },
-        //   //{ src: require("../assets/data/dummy5/5.jpg"), name: "dummy_view5", type: "dummy5" },
-        //   //{ src: require("../assets/data/dummy5/6.jpg"), name: "dummy_view6", type: "dummy5" }
-        // ],
+        // ダミー質問5
+        [
+          { src: require("../assets/data/dummy5/1.jpg"), name: "dummy_view1", type: "dummy5" },
+          { src: require("../assets/data/dummy5/2.jpg"), name: "dummy_view2", type: "dummy5" },
+          { src: require("../assets/data/dummy5/3.jpg"), name: "dummy_view3", type: "dummy5" },
+          { src: require("../assets/data/dummy5/4.jpg"), name: "dummy_view4", type: "dummy5" },
+          //{ src: require("../assets/data/dummy5/5.jpg"), name: "dummy_view5", type: "dummy5" },
+          //{ src: require("../assets/data/dummy5/6.jpg"), name: "dummy_view6", type: "dummy5" }
+        ],
 
 
       ],
