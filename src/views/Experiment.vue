@@ -199,10 +199,10 @@ export default {
         ],
         // アクション漫画
         [
-          { src: require("../assets/data/manga_action/1.jpg"), name: "manga_action1", type: "manga" },
-          { src: require("../assets/data/manga_action/2.jpg"), name: "manga_action2", type: "manga" },
-          { src: require("../assets/data/manga_action/3.jpg"), name: "manga_action3", type: "manga" },
-          { src: require("../assets/data/manga_action/4.jpg"), name: "manga_action4", type: "manga" }
+          { src: require("../assets/data/manga/1.jpg"), name: "manga1", type: "manga" },
+          { src: require("../assets/data/manga/2.jpg"), name: "manga2", type: "manga" },
+          { src: require("../assets/data/manga/3.jpg"), name: "manga3", type: "manga" },
+          { src: require("../assets/data/manga/4.jpg"), name: "manga4", type: "manga" }
         ],
         // 掃除機
         [
@@ -295,7 +295,7 @@ export default {
         dummy2: "3階建ての家を選んでください",
         dummy3: "一輪車を選んでください",
         dummy4: "映っている円が一番多い画像を選んでください",
-        //dummy5: "夜の時間帯の写真を選んでください"
+        dummy5: "夜の時間帯の写真を選んでください"
 
       },
       shuffledQuestions: [],
