@@ -11,6 +11,7 @@ export default new Vuex.Store({
     isReadyFullscreen: false,
     pixelDensity: null,
     isReadyStart: false,
+    display_method: Math.random() < 0.5 ? 0 : 1,
   },
   getters: {
   },

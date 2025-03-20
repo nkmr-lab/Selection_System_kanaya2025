@@ -57,8 +57,12 @@
 <script>
 import _ from "lodash";
 import axios from "axios";
+import { mapState } from 'vuex';
 
 export default {
+  computed: {
+    ...mapState(['display_method'])
+  },
   data() {
     return {
       choices: [
@@ -99,23 +103,23 @@ export default {
           { src: require("../assets/data/door/6.jpg"), name: "door6", type: "door" }
         ],
         // チーター
-        [
-          { src: require("../assets/data/cheetah/1.jpg"), name: "cheetah1", type: "cheetah" },
-          //{ src: require("../assets/data/cheetah/2.jpg"), name: "cheetah2", type: "cheetah" },
-          //{ src: require("../assets/data/cheetah/3.jpg"), name: "cheetah3", type: "cheetah" },
-          { src: require("../assets/data/cheetah/4.jpg"), name: "cheetah4", type: "cheetah" },
-          { src: require("../assets/data/cheetah/5.jpg"), name: "cheetah5", type: "cheetah" },
-          { src: require("../assets/data/cheetah/6.jpg"), name: "cheetah6", type: "cheetah" }
-        ],
+        // [
+        //   { src: require("../assets/data/cheetah/1.jpg"), name: "cheetah1", type: "cheetah" },
+        //   //{ src: require("../assets/data/cheetah/2.jpg"), name: "cheetah2", type: "cheetah" },
+        //   //{ src: require("../assets/data/cheetah/3.jpg"), name: "cheetah3", type: "cheetah" },
+        //   { src: require("../assets/data/cheetah/4.jpg"), name: "cheetah4", type: "cheetah" },
+        //   { src: require("../assets/data/cheetah/5.jpg"), name: "cheetah5", type: "cheetah" },
+        //   { src: require("../assets/data/cheetah/6.jpg"), name: "cheetah6", type: "cheetah" }
+        // ],
         // 消しゴム
-        [
-          { src: require("../assets/data/eraser/1.jpg"), name: "eraser1", type: "eraser" },
-          //{ src: require("../assets/data/eraser/2.jpg"), name: "eraser2", type: "eraser" },
-          //{ src: require("../assets/data/eraser/3.jpg"), name: "eraser3", type: "eraser" },
-          { src: require("../assets/data/eraser/4.jpg"), name: "eraser4", type: "eraser" },
-          { src: require("../assets/data/eraser/5.jpg"), name: "eraser5", type: "eraser" },
-          { src: require("../assets/data/eraser/6.jpg"), name: "eraser6", type: "eraser" }
-        ],
+        // [
+        //   { src: require("../assets/data/eraser/1.jpg"), name: "eraser1", type: "eraser" },
+        //   //{ src: require("../assets/data/eraser/2.jpg"), name: "eraser2", type: "eraser" },
+        //   //{ src: require("../assets/data/eraser/3.jpg"), name: "eraser3", type: "eraser" },
+        //   { src: require("../assets/data/eraser/4.jpg"), name: "eraser4", type: "eraser" },
+        //   { src: require("../assets/data/eraser/5.jpg"), name: "eraser5", type: "eraser" },
+        //   { src: require("../assets/data/eraser/6.jpg"), name: "eraser6", type: "eraser" }
+        // ],
         // 釣り堀
         [
           //{ src: require("../assets/data/fishing/1.jpg"), name: "fishing1", type: "fishing" },
@@ -171,14 +175,14 @@ export default {
           //{ src: require("../assets/data/wise/6.jpg"), name: "wise6", type: "wise" }
         ],
         // 山
-        [
-          //{ src: require("../assets/data/mountain/1.jpg"), name: "mountain1", type: "mountain" },
-          //{ src: require("../assets/data/mountain/2.jpg"), name: "mountain2", type: "mountain" },
-          { src: require("../assets/data/mountain/3.jpg"), name: "mountain3", type: "mountain" },
-          { src: require("../assets/data/mountain/4.jpg"), name: "mountain4", type: "mountain" },
-          { src: require("../assets/data/mountain/5.jpg"), name: "mountain5", type: "mountain" },
-          { src: require("../assets/data/mountain/6.jpg"), name: "mountain6", type: "mountain" }
-        ],
+        // [
+        //   //{ src: require("../assets/data/mountain/1.jpg"), name: "mountain1", type: "mountain" },
+        //   //{ src: require("../assets/data/mountain/2.jpg"), name: "mountain2", type: "mountain" },
+        //   { src: require("../assets/data/mountain/3.jpg"), name: "mountain3", type: "mountain" },
+        //   { src: require("../assets/data/mountain/4.jpg"), name: "mountain4", type: "mountain" },
+        //   { src: require("../assets/data/mountain/5.jpg"), name: "mountain5", type: "mountain" },
+        //   { src: require("../assets/data/mountain/6.jpg"), name: "mountain6", type: "mountain" }
+        // ],
         // オレンジ
         [
           //{ src: require("../assets/data/orange/1.jpg"), name: "orange1", type: "orange" },
@@ -205,12 +209,12 @@ export default {
           { src: require("../assets/data/manga/4.jpg"), name: "manga4", type: "manga" }
         ],
         // 掃除機
-        [
-          { src: require("../assets/data/vacuum/1.jpg"), name: "vacuum1", type: "vacuum" },
-          { src: require("../assets/data/vacuum/2.jpg"), name: "vacuum2", type: "vacuum" },
-          { src: require("../assets/data/vacuum/3.jpg"), name: "vacuum3", type: "vacuum" },
-          { src: require("../assets/data/vacuum/4.jpg"), name: "vacuum4", type: "vacuum" }
-        ],
+        // [
+        //   { src: require("../assets/data/vacuum/1.jpg"), name: "vacuum1", type: "vacuum" },
+        //   { src: require("../assets/data/vacuum/2.jpg"), name: "vacuum2", type: "vacuum" },
+        //   { src: require("../assets/data/vacuum/3.jpg"), name: "vacuum3", type: "vacuum" },
+        //   { src: require("../assets/data/vacuum/4.jpg"), name: "vacuum4", type: "vacuum" }
+        // ],
          // 映画
         [
           { src: require("../assets/data/movie/1.jpg"), name: "movie1", type: "movie" },
@@ -277,24 +281,25 @@ export default {
       shuffledChoices: [],
       questions: {
 
-         swim: "一番行ってみたいと思う海の景色はどれですか？",
+        swim: "一番行ってみたいと思う海の景色はどれですか？",
         flower: "自宅に飾りたいチューリップを1つ選んでください",
-         wise: "表示される人物の内、将棋が強そうな人はどれですか？",
-         diamond: "表示されるダイヤモンドの内、一番欲しいのはどれですか？",
+        wise: "表示される人物の内、将棋が強そうな人はどれですか？",
+        diamond: "表示されるダイヤモンドの内、一番欲しいのはどれですか？",
         aurora: "表示されるオーロラの内、一番見てみたいのはどれですか？",
-         spycy: "表示される食べ物の内、一番辛そうなのはどれですか？",
-         eraser: "消しゴムを使います。どの消しゴムを使いますか？",
-         button: "表示されるボタンの内、一番押してみたいボタンはどれですか？",
-         door: "表示されるドアの内、一番重たそうなドアはどれですか？",
-         lemon: "表示されるレモンの内、一番酸っぱそうなレモンはどれですか？",
-         cheetah: "表示されるチーターの内、一番動物らしさを感じるのはどれですか？",
-         fishing: "表示される釣り堀の内、一番魚が釣れそうな釣り堀はどれですか？",
-         mountain: "山岳地帯の写真が表示されます。探索してみたい場所を選んでください",
-         orange: "一番売れると思うオレンジの宣材写真を1つ選んでください",
-         waterfall: "表示される滝の内、一番気に入った滝はどれですか？",
-         vacuum: "表示される掃除機の内、 一番安そうな掃除機はどれですか？",
-         manga: "表示される漫画の内、一番読みたいのはどれですか？",
-         movie: "表示される映画のサムネイルの内、一番見たいと思うのはどれですか？",
+        spycy: "表示される食べ物の内、一番辛そうなのはどれですか？",
+        //eraser: "消しゴムを使います。どの消しゴムを使いますか？",
+        button: "表示されるボタンの内、一番押してみたいボタンはどれですか？",
+        door: "表示されるドアの内、一番重たそうなドアはどれですか？",
+        lemon: "表示されるレモンの内、一番酸っぱそうなレモンはどれですか？",
+        //cheetah: "表示されるチーターの内、一番動物らしさを感じるのはどれですか？",
+        fishing: "表示される釣り堀の内、一番魚が釣れそうな釣り堀はどれですか？",
+        //mountain: "山岳地帯の写真が表示されます。探索してみたい場所を選んでください",
+        orange: "一番売れると思うオレンジの宣材写真を1つ選んでください",
+        waterfall: "表示される滝の内、一番気に入った滝はどれですか？",
+        //vacuum: "表示される掃除機の内、 一番安そうな掃除機はどれですか？",
+        manga: "表示される漫画の内、一番読みたいのはどれですか？",
+        movie: "表示される映画のサムネイルの内、一番見たいと思うのはどれですか？",
+        music: "表示される楽曲のジャケット写真の内、一番聞いてみたいのはどれですか？",
         //milk: "表示される牛乳の内、一番背が伸びそうなのはどれですか？",
         //juice: "表示される野菜ジュースの内、一番おいしそうなのはどれですか？",
 
@@ -361,47 +366,29 @@ export default {
     // ダミー質問と通常質問を分ける
     let dummyQuestions = questionList.filter(q => q.name.startsWith("dummy"));
     let nonDummyQuestions = questionList.filter(q => !q.name.startsWith("dummy"));
+    shuffleArray(nonDummyQuestions);
+    let precd_question = nonDummyQuestions.slice(0, 5);
+    let delay_question = nonDummyQuestions.slice(5, 10);
+    let equal_question = nonDummyQuestions.slice(10, 15).concat(dummyQuestions);
 
-    // 前半9問を pixel、後半9問を blur に分ける
-    let pixelQuestions = nonDummyQuestions.slice(0, 9);
-    let blurQuestions = nonDummyQuestions.slice(9, 18);
+    console.log(precd_question);
+    console.log(delay_question);
+    console.log(equal_question);
 
-    // 各グループのカウンタ
-    let counts = {
-        blur: { precd: 0, delay: 0, equal: 0 },
-        pixel: { precd: 0, delay: 0, equal: 0 }
-    };
-
-    shuffleArray(dummyQuestions);
-    // ダミー質問を割り当てる（2問をblur/equal、2問をpixel/equalに確実に割り当て）
-    this.assignment.push({ question: dummyQuestions[0].name, group: 0, part: 4, text: dummyQuestions[0].text });
-    this.assignment.push({ question: dummyQuestions[1].name, group: 0, part: 4, text: dummyQuestions[1].text });
-    this.assignment.push({ question: dummyQuestions[2].name, group: 1, part: 4, text: dummyQuestions[2].text });
-    this.assignment.push({ question: dummyQuestions[3].name, group: 1, part: 4, text: dummyQuestions[3].text });
+    this.assignment = [
+      ...precd_question.map(q => ({ question: q.name, group: this.display_method, part: 2, text: q.text})),
+      ...delay_question.map(q => ({ question: q.name, group: this.display_method, part: 3, text: q.text})),
+      ...equal_question.map(q => ({ question: q.name, group: this.display_method, part: 4, text: q.text})),
+    ]
 
     // 通常の質問を正確に割り当てる関数
-// 割り当てる関数
-const allocateToGroup = (questions, groupName) => {
-  questions.forEach(question => {
-    if (counts[groupName].precd < 3) {
-      this.assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 2, text: question.text });
-      counts[groupName].precd++;
-    } else if (counts[groupName].delay < 3) {
-      this.assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 3, text: question.text });
-      counts[groupName].delay++;
-    } else if (counts[groupName].equal < 3) {
-      this.assignment.push({ question: question.name, group: groupName === "blur" ? 0 : 1, part: 4, text: question.text });
-      counts[groupName].equal++;
-    }
-  });
-};
-
-  // pixel と blur に分配
-  allocateToGroup(pixelQuestions, "pixel");
-  allocateToGroup(blurQuestions, "blur");
+    // 割り当てる関数
+    console.log("display_method:",this.display_method);
+    // display_method :0 → blur、display_method:1 → pixel
 
   // 最終的にすべてシャッフルして出題順を決定
   shuffleArray(this.assignment);
+  console.log(this.assignment);
     // ------------------
 
     // 質問順をシャッフル
@@ -614,6 +601,7 @@ const allocateToGroup = (questions, groupName) => {
       }
       return position;
     },
+
     changeNumToMethods(num){
       let image_methods = "";
       switch (num){
@@ -628,6 +616,7 @@ const allocateToGroup = (questions, groupName) => {
       } 
       return image_methods;
     },
+
     changeNumToSpeed(num){
     let image_speed = "";
       switch (num){
@@ -645,6 +634,25 @@ const allocateToGroup = (questions, groupName) => {
       } 
       return image_speed;
     },
+
+    changeNumToCondition(num){
+    let cond_speed = "";
+      switch (num){
+      case 0:
+        cond_speed = "2000ms";
+        break;
+      case 1:
+        cond_speed = "500ms";
+        break;
+      default:
+       cond_speed = "";
+      } 
+      return cond_speed;
+    },
+
+
+  
+
     // ここから画像処理の関数　先にblur
     applyBlurEffect(speed1, speed2, ImageObjects, position = null) {
 
@@ -943,12 +951,10 @@ const allocateToGroup = (questions, groupName) => {
       }
 
       if(this.cond === null){
-        //condがnull（先行・遅延のとき）のときはDBに何も書きこまない
-        this.cond = -1;
-      }
-      
-
-        
+         //condがnull（先行・遅延のとき）のときはDBに何も書きこまない
+         this.cond = -1;
+       }
+    
 
 
       // 男女に応じてたたくapi変える
