@@ -4,7 +4,7 @@ module.exports = defineConfig({
     'vuetify'
   ],
   // 男女に応じて書き換える
-  publicPath: process.env.NODE_ENV === 'production' ? '/Selection_System_hcs202505' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/Selection_System_2025_female' : '/',
   pages: {
     index: {
       entry: "src/main.js",

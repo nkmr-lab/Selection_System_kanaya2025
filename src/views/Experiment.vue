@@ -324,9 +324,9 @@ export default {
       wHeight: window.innerHeight,
       TargetPosition: 0,
       isDelay: false,
-      group: null,
-      part: null,
-      cond: null, //等速の時の500msか2000msか
+      group: null,// blurかpixelか
+      part: null, // 先行か遅延か等速か
+      cond: null, // 等速の時の500msか2000msか
       imageIDs: [],
       images: [],
       selectedPosition: null,
@@ -371,9 +371,9 @@ export default {
     let delay_question = nonDummyQuestions.slice(5, 10);
     let equal_question = nonDummyQuestions.slice(10, 15).concat(dummyQuestions);
 
-    console.log(precd_question);
-    console.log(delay_question);
-    console.log(equal_question);
+    // console.log(precd_question);
+    // console.log(delay_question);
+    // console.log(equal_question);
 
     this.assignment = [
       ...precd_question.map(q => ({ question: q.name, group: this.display_method, part: 2, text: q.text})),
@@ -383,12 +383,12 @@ export default {
 
     // 通常の質問を正確に割り当てる関数
     // 割り当てる関数
-    console.log("display_method:",this.display_method);
+    // console.log("display_method:",this.display_method);
     // display_method :0 → blur、display_method:1 → pixel
 
   // 最終的にすべてシャッフルして出題順を決定
   shuffleArray(this.assignment);
-  console.log(this.assignment);
+  // console.log(this.assignment);
     // ------------------
 
     // 質問順をシャッフル
@@ -437,7 +437,7 @@ export default {
           const question = currentAssignment.text;  // 質問文
           this.group = currentAssignment.group;    // 0: blur, 1: pixel
           this.part = currentAssignment.part;      // 2: precd, 3: delay, 4: equal
-          console.log("method:",this.group,"speed:",this.part);
+          // console.log("method:",this.group,"speed:",this.part);
           
           // 条件に応じて関数を分岐
         if (this.group === 0 && this.part === 2) {
@@ -459,10 +459,10 @@ export default {
 
     // 各パターンに対応する関数（例）
     handleBlurPrecd(question) {
-      console.log("Blur + Precd 処理:", question);
+      // console.log("Blur + Precd 処理:", question);
       this.TargetPosition = Math.floor(Math.random() * 4);
       this.cond = null;
-      console.log("変化させる箇所：",this.TargetPosition);
+      // console.log("変化させる箇所：",this.TargetPosition);
       requestAnimationFrame(() => {
         for(let i=0; i<this.shuffledChoices[0].length; i++){
           this.setImage(i);
@@ -472,10 +472,10 @@ export default {
     },
 
     handleBlurDelay(question) {
-      console.log("Blur + Delay 処理:", question);
+      // console.log("Blur + Delay 処理:", question);
       this.TargetPosition = Math.floor(Math.random() * 4);
       this.cond = null;
-      console.log("変化させる箇所：",this.TargetPosition);
+      // console.log("変化させる箇所：",this.TargetPosition);
       requestAnimationFrame(() => {
         for(let i=0; i<this.shuffledChoices[0].length; i++){
           this.setImage(i);
@@ -485,7 +485,7 @@ export default {
     },
 
     handleBlurEqual(question) {
-      console.log("Blur + Equal 処理:", question);
+      // console.log("Blur + Equal 処理:", question);
       this.TargetPosition = null;
       this.cond = Math.floor(Math.random() * 2);
       requestAnimationFrame(() => {
@@ -493,20 +493,20 @@ export default {
           this.setImage(i);
         }
         if(this.cond == 0){
-          console.log("Blur + Equal 処理（2,000ms）:", question);
+          // console.log("Blur + Equal 処理（2,000ms）:", question);
           this.applyBlurEffect(500,500,this.shuffledChoices[this.section],null);
         }else{
-        console.log("Blur + Equal 処理（500ms）:", question);
+        // console.log("Blur + Equal 処理（500ms）:", question);
           this.applyBlurEffect(125,125,this.shuffledChoices[this.section],null);
         }
       }); 
     },
 
     handlePixelPrecd(question) {
-    console.log("Pixel + Precd 処理:", question);
+    // console.log("Pixel + Precd 処理:", question);
     this.TargetPosition = Math.floor(Math.random() * 4);
     this.cond = null;
-    console.log("変化させる箇所：", this.TargetPosition);
+    // console.log("変化させる箇所：", this.TargetPosition);
 
     let imagesLoaded = 1;
 
@@ -527,10 +527,10 @@ export default {
     },
 
     handlePixelDelay(question) {
-    console.log("Pixel + Delay 処理:", question);
+    // console.log("Pixel + Delay 処理:", question);
     this.TargetPosition = Math.floor(Math.random() * 4);
     this.cond = null;
-    console.log("変化させる箇所：", this.TargetPosition);
+    // console.log("変化させる箇所：", this.TargetPosition);
     
     let imagesLoaded = 1;
     for (let i = 0; i < this.shuffledChoices[0].length; i++) {
@@ -549,7 +549,7 @@ export default {
     },
 
     handlePixelEqual(question) {
-      console.log("Pixel + Equal 処理:", question);
+      // console.log("Pixel + Equal 処理:", question);
       this.TargetPosition = null;
 
       let imagesLoaded = 0;
@@ -569,10 +569,10 @@ export default {
 
                 if (imagesLoaded === 4) {
                     if(this.cond == 0){
-                      console.log("Pixel + Equal 処理（2,000ms）:", question);
+                      // console.log("Pixel + Equal 処理（2,000ms）:", question);
                       this.applyPixelEffect(500,500,this.shuffledChoices[this.section],null);
                     }else{
-                      console.log("Pixel + Equal 処理（500ms）:", question);
+                      // console.log("Pixel + Equal 処理（500ms）:", question);
                       this.applyPixelEffect(125,125,this.shuffledChoices[this.section],null);
                     }
                 }
@@ -670,7 +670,7 @@ export default {
    }).filter(img => img !== null);
 
     if (images.length === 0) {
-        console.error("画像が取得できませんでした");
+        // console.error("画像が取得できませんでした");
         return;
     }
     document.querySelectorAll("img").forEach(image => {
@@ -707,7 +707,7 @@ export default {
         const changeImage = images[position];
 
         if (!changeImage) {
-            console.error("指定された position に対応する画像が見つかりません");
+            // console.error("指定された position に対応する画像が見つかりません");
             return;
         }
 
@@ -770,7 +770,7 @@ export default {
    }).filter(img => img !== null);
 
    if (this.images.length === 0) {
-       console.error("❌ applyPixelEffect: 画像が取得できませんでした");
+      //  console.error("❌ applyPixelEffect: 画像が取得できませんでした");
        return;
    }
 
@@ -938,6 +938,8 @@ export default {
       const noDelayPos = this.changeNumToPosition(this.TargetPosition);
       const image_method = this.changeNumToMethods(this.assignment[this.section].group);
       const image_speed = this.changeNumToSpeed(this.assignment[this.section].part);
+      const cond_speed = this.changeNumToCondition(this.cond);
+
       let posX = 0;
       let posY = 0;
       if (this.mouseTrajectoryX[this.mouseTrajectoryX.length - 1] === undefined) {
@@ -950,15 +952,15 @@ export default {
         posY = this.mouseTrajectoryY[this.mouseTrajectoryY.length - 1];
       }
 
-      if(this.cond === null){
-         //condがnull（先行・遅延のとき）のときはDBに何も書きこまない
-         this.cond = -1;
-       }
+      // if(this.cond === null){
+      //    //condがnull（先行・遅延のとき）のときはDBに何も書きこまない
+      //    this.cond = -1;
+      //  }
     
 
 
       // 男女に応じてたたくapi変える
-      axios.post("https://kanaya.nkmr.io/Selection_System_hcs202505/five_delay_female_result_post.php", {
+      axios.post("https://kanaya.nkmr.io/Selection_System_2025_female/five_delay_female_result_post.php", {
         uuid: this.$store.state.uuid,
         sex: this.$store.state.sex,
         age: this.$store.state.age,
@@ -973,7 +975,7 @@ export default {
         lowerRight: this.shuffledChoices[this.section][3].name,
         method: image_method,
         speed: image_speed,
-        cond: this.cond,
+        cond: cond_speed,
         TargetPosition: noDelayPos,
         width: this.wWidth,
         height: this.wHeight,
